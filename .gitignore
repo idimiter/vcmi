@@ -2,7 +2,7 @@
 *.exe
 *.depend
 *.o
-*.a
+# *.a
 *.res
 *.layout
 *.pro.user
