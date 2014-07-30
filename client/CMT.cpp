@@ -50,7 +50,9 @@
 #undef main
 #endif
 
+#ifndef __IOS__
 namespace po = boost::program_options;
+#endif
 
 /*
  * CMT.cpp, part of VCMI engine
@@ -85,7 +87,9 @@ std::queue<SDL_Event> events;
 boost::mutex eventsM;
 
 bool gNoGUI = false;
+#ifndef __IOS__
 static po::variables_map vm;
+#endif
 
 //static bool setResolution = false; //set by event handling thread after resolution is adjusted
 
@@ -170,7 +174,11 @@ static void prog_version(void)
 	std::cout << VCMIDirs::get().genHelpString();
 }
 
+#ifndef __IOS__
 static void prog_help(const po::options_description &opts)
+#else
+static void prog_help()
+#endif
 {
 	printf("%s - A Heroes of Might and Magic 3 clone\n", GameConstants::VCMI_VERSION.c_str());
     printf("Copyright (C) 2007-2014 VCMI dev team - see AUTHORS file\n");
@@ -178,12 +186,14 @@ static void prog_help(const po::options_description &opts)
     printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
 	printf("\n");
 	printf("Usage:\n");
+#ifndef __IOS__
 	std::cout << opts;
+#endif
 // 	printf("  -h, --help        display this help and exit\n");
 // 	printf("  -v, --version     display version information and exit\n");
 }
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__IOS__)
 void OSX_checkForUpdates();
 #endif
 
@@ -195,8 +205,9 @@ int SDL_main(int argc, char *argv[])
 int main(int argc, char** argv)
 #endif
 {
-#ifdef __APPLE__
-	// Correct working dir executable folder (not bundle folder) so we can use executable relative paths
+#ifndef __IOS__
+#if defined(__APPLE__)
+// Correct working dir executable folder (not bundle folder) so we can use executable relative paths
     std::string executablePath = argv[0];
     std::string workDir = executablePath.substr(0, executablePath.rfind('/'));
     chdir(workDir.c_str());
@@ -255,6 +266,7 @@ int main(int argc, char** argv)
 		gNoGUI = true;
 		vm.insert(std::pair<std::string, po::variable_value>("onlyAI", po::variable_value()));
 	}
+#endif // __IOS__
 #ifdef VCMI_SDL1
 	//Set environment vars to make window centered. Sometimes work, sometimes not. :/
 	putenv((char*)"SDL_VIDEO_WINDOW_POS");
@@ -380,10 +392,15 @@ int main(int argc, char** argv)
 #ifdef DISABLE_VIDEO
 	CCS->videoh = new CEmptyVideoPlayer;
 #else
+#ifndef __IOS__
 	if (!gNoGUI && !vm.count("disable-video"))
 		CCS->videoh = new CVideoPlayer;
 	else
 		CCS->videoh = new CEmptyVideoPlayer;
+#else
+	CCS->videoh = new CVideoPlayer;
+#endif // __IOS__
+
 #endif
 
     logGlobal->infoStream()<<"\tInitializing video: "<<pomtime.getDiff();
@@ -411,6 +428,7 @@ int main(int argc, char** argv)
 	init();
 #endif
 
+#ifndef __IOS__ // I know this is ugly, but don't see better way, sorry for that
 	if(!gNoGUI )
 	{
 		if(!vm.count("battle") && !vm.count("nointro"))
@@ -455,6 +473,20 @@ int main(int argc, char** argv)
 		si->playerInfos[PlayerColor(1)].color = PlayerColor(1);
 		startGame(si);
 	}
+#else
+
+	playIntro();
+	SDL_FillRect(screen,nullptr,0);
+
+	CSDL_Ext::update(screen);
+#ifndef VCMI_NO_THREADED_LOAD
+	loading.join();
+#endif
+    logGlobal->infoStream()<<"Initialization of VCMI (together): "<<total.getDiff();
+
+	GH.curInt = CGPreGame::create();
+
+#endif // __IOS__
 
 	if(!gNoGUI)
 	{
@@ -614,7 +646,9 @@ void processCommand(const std::string &message)
 	}
 	else if(cn == "onlyai")
 	{
+#ifndef __IOS__
 		vm.insert(std::pair<std::string, po::variable_value>("onlyAI", po::variable_value()));
+#endif // __IOS__
 	}
 	else if (cn == "ai")
 	{
@@ -871,7 +905,11 @@ static bool recreateWindow(int w, int h, int bpp, bool fullscreen)
 		mainWindow = nullptr;
 	}	
 	
-	
+#ifdef __IOS__
+	mainWindow = SDL_CreateWindow(NAME.c_str(), 0, 0, w, h,SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS);
+	SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+#else
 	if(fullscreen)
 	{
 		//in full-screen mode always use desktop resolution
@@ -882,7 +920,7 @@ static bool recreateWindow(int w, int h, int bpp, bool fullscreen)
 	{
 		mainWindow = SDL_CreateWindow(NAME.c_str(), SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, w, h, 0);
 	}
-	
+#endif
 	
 	
 	if(nullptr == mainWindow)
@@ -1180,6 +1218,7 @@ static void mainLoop()
 
 void startGame(StartInfo * options, CConnection *serv/* = nullptr*/)
 {
+#ifndef __IOS__
 	if(vm.count("onlyAI"))
 	{
 		auto ais = vm.count("ai") ? vm["ai"].as<std::vector<std::string>>() : std::vector<std::string>();
@@ -1194,6 +1233,7 @@ void startGame(StartInfo * options, CConnection *serv/* = nullptr*/)
 				elem.second.name = ais[i++];
 		}
 	}
+#endif
 
     client = new CClient;
 	CPlayerInterface::howManyPeople = 0;

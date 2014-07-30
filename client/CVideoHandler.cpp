@@ -844,7 +844,11 @@ bool CVideoPlayer::nextFrame()
 						SDL_UnlockYUVOverlay(overlay);
 #else
 					if (texture) {
+#ifdef __IOS__ // I use older build for ffmpeg befire tge AV_ prefixes, will update it ASAP
+						avpicture_alloc(&pict, PIX_FMT_YUV420P, codecContext->width, codecContext->height);
+#else
 						avpicture_alloc(&pict, AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height);
+#endif
 
 						sws_scale(sws, frame->data, frame->linesize,
 								  0, codecContext->height, pict.data, pict.linesize);

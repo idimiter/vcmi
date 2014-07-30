@@ -77,6 +77,62 @@ std::string VCMIDirs::libraryName(std::string basename) const
 	return basename + ".dll";
 }
 
+#elif defined(__IOS__)
+std::string VCMIDirs::userCachePath() const
+{
+	return userDataPath();
+}
+
+std::string VCMIDirs::userConfigPath() const
+{
+	return userDataPath() + "/config";
+}
+
+std::string VCMIDirs::userSavePath() const
+{
+	return userDataPath() + "/Games";
+}
+
+std::string VCMIDirs::userDataPath() const
+{
+	// This is Cocoa code that should be normally used to get path to Application Support folder but can't use it here for now...
+	// NSArray* urls = [[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask];
+	// UserPath = path([urls[0] path] + "/vcmi").string();
+
+	// ...so here goes a bit of hardcode instead
+	std::string home_dir = ".";
+	if (getenv("HOME") != nullptr )
+		home_dir = getenv("HOME");
+
+	return boost::filesystem::path(home_dir + "/Documents").string();
+}
+
+std::string VCMIDirs::libraryPath() const
+{
+	return ".";
+}
+
+std::string VCMIDirs::clientPath() const
+{
+	return "./vcmiclient";
+}
+
+std::string VCMIDirs::serverPath() const
+{
+	return "./vcmiserver";
+}
+
+std::vector<std::string> VCMIDirs::dataPaths() const
+{
+	return std::vector<std::string>(1, "../Data");
+}
+
+std::string VCMIDirs::libraryName(std::string basename) const
+{
+	return "lib" + basename + ".so"; // I know it's not right but I'm changing it .so I can reuse the Android code here for loading the AI
+}
+
+
 #elif defined(__APPLE__)
 
 std::string VCMIDirs::userCachePath() const

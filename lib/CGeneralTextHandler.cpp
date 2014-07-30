@@ -113,7 +113,11 @@ std::string Unicode::toUnicode(const std::string &text)
 
 std::string Unicode::toUnicode(const std::string &text, const std::string &encoding)
 {
+#ifndef __IOS__ // WARNING!!! This should be fixed to work on iOS, it results in a linker error with the std library, I'll check it ASAP!
 	return boost::locale::conv::to_utf<char>(text, encoding);
+#else
+	return text;
+#endif // __IOS__
 }
 
 std::string Unicode::fromUnicode(const std::string & text)
@@ -123,7 +127,11 @@ std::string Unicode::fromUnicode(const std::string & text)
 
 std::string Unicode::fromUnicode(const std::string &text, const std::string &encoding)
 {
+#ifndef __IOS__ // WARNING!!! This should be fixed to work on iOS, it results in a linker error with the std library, I'll check it ASAP!
 	return boost::locale::conv::from_utf<char>(text, encoding);
+#else
+	return text;
+#endif // __IOS__
 }
 
 void Unicode::trimRight(std::string & text, const size_t amount/* =1 */)

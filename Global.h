@@ -104,7 +104,9 @@ static_assert(sizeof(bool) == 1, "Bool needs to be 1 byte in size.");
 #include <boost/lexical_cast.hpp>
 #include <boost/logic/tribool.hpp>
 #include <boost/optional.hpp>
+#ifndef __IOS__ // I didn't compile program options because it have some duplicated with filesystem here.. should get it working and remove a lot of ifdef's
 #include <boost/program_options.hpp>
+#endif // __IOS__
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/algorithm.hpp>

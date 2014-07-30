@@ -41,6 +41,11 @@ extern std::string NAME;
 namespace intpr = boost::interprocess;
 #endif
 
+#ifdef __IOS__
+#import <dispatch/dispatch.h>
+int server_main(int server_port);
+#endif // __IOS__
+
 /*
  * Client.cpp, part of VCMI engine
  *
@@ -867,7 +872,16 @@ void CServerHandler::callServer()
 	setThreadName("CServerHandler::callServer");
 	std::string logName = VCMIDirs::get().userCachePath() + "/server_log.txt";
 	std::string comm = VCMIDirs::get().serverPath() + " --port=" + port + " > " + logName;
+#ifdef __IOS__
+	int result = 0;
+
+	dispatch_async(dispatch_get_main_queue(), ^{
+		server_main( boost::lexical_cast<int>(port) );
+	});
+
+#else
 	int result = std::system(comm.c_str());
+#endif
 	if (result == 0)
         logNetwork->infoStream() << "Server closed correctly";
 	else

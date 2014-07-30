@@ -6311,6 +6311,7 @@ void CGameHandler::duelFinished()
 	time_t timeNow;
 	time(&timeNow);
 
+#ifndef __IOS__
 	std::ofstream out(cmdLineOptions["resultsFile"].as<std::string>(), std::ios::app);
 	if(out)
 	{
@@ -6322,6 +6323,7 @@ void CGameHandler::duelFinished()
 	{
 		logGlobal->errorStream() << "Cannot open to write " << cmdLineOptions["resultsFile"].as<std::string>();
 	}
+#endif // __IOS__
 
 	CSaveFile resultFile("result.vdrst");
 	resultFile << *battleResult.data;

@@ -36,8 +36,13 @@
 #include <execinfo.h>
 #endif
 
+#ifndef __IOS__
 std::string NAME_AFFIX = "server";
 std::string NAME = GameConstants::VCMI_VERSION + std::string(" (") + NAME_AFFIX + ')'; //application name
+#else
+std::string SERVER_NAME_AFFIX = "server";
+std::string SERVER_NAME = GameConstants::VCMI_VERSION + std::string(" (") + SERVER_NAME_AFFIX + ')'; //application name
+#endif
 using namespace boost;
 using namespace boost::asio;
 using namespace boost::asio::ip;
@@ -47,7 +52,9 @@ namespace intpr = boost::interprocess;
 bool end2 = false;
 int port = 3030;
 
+#ifndef __IOS__
 boost::program_options::variables_map cmdLineOptions;
+#endif // __IOS__
 
 /*
  * CVCMIServer.cpp, part of VCMI engine
@@ -207,7 +214,11 @@ void CPregameServer::connectionAccepted(const boost::system::error_code& ec)
 	}
 
     logNetwork->infoStream() << "We got a new connection! :)";
+#ifndef __IOS__
 	CConnection *pc = new CConnection(upcomingConnection, NAME);
+#else
+	CConnection *pc = new CConnection(upcomingConnection, SERVER_NAME);
+#endif
 	initConnection(pc);
 	upcomingConnection = nullptr;
 
@@ -428,7 +439,11 @@ void CVCMIServer::start()
 		return;
 	}
     logNetwork->infoStream()<<"We've accepted someone... ";
+#ifndef __IOS__
 	firstConnection = new CConnection(s,NAME);
+#else
+	firstConnection = new CConnection(s,SERVER_NAME);
+#endif
     logNetwork->infoStream()<<"Got connection!";
 	while(!end2)
 	{
@@ -507,7 +522,12 @@ void CVCMIServer::loadGame()
 				i--;
 				continue;
 			}
+#ifndef __IOS__
 			cc = new CConnection(s,NAME);
+#else
+			cc = new CConnection(s,SERVER_NAME);
+#endif // __IOS__
+
 			cc->addStdVecItems(gh.gs);
 		}	
 		gh.conns.insert(cc);
@@ -518,6 +538,7 @@ void CVCMIServer::loadGame()
 
 static void handleCommandOptions(int argc, char *argv[])
 {
+#ifndef __IOS__
 	namespace po = boost::program_options;
 	po::options_description opts("Allowed options");
 	opts.add_options()
@@ -558,6 +579,7 @@ static void handleCommandOptions(int argc, char *argv[])
 		std::cout << VCMIDirs::get().genHelpString();
 		exit(0);
 	}
+#endif // __IOS__
 }
 
 #if defined(__GNUC__) && !defined (__MINGW32__) && !defined(__ANDROID__)
@@ -586,9 +608,15 @@ void handleLinuxSignal(int sig)
 	_exit(EXIT_FAILURE);
 }
 #endif
+#ifdef __IOS__
+int server_main(int server_port) {
 
+	if(fork() != 0)	return 0; // TEMPORARY!!! JUST FOR TESTING ON THE EMULATOR. TODO:: Find other way to run the server
+
+#else
 int main(int argc, char** argv)
 {
+#endif // __IOS__
 	// Installs a sig sev segmentation violation handler
 	// to log stacktrace
 	#if defined(__GNUC__) && !defined (__MINGW32__) && !defined(__ANDROID__)
@@ -599,6 +627,7 @@ int main(int argc, char** argv)
 	CBasicLogConfigurator logConfig(VCMIDirs::get().userCachePath() + "/VCMI_Server_log.txt", console);
 	logConfig.configureDefault();
 
+#ifndef __IOS__
 	preinitDLL(console);
     settings.init();
 	logConfig.configure();
@@ -608,6 +637,11 @@ int main(int argc, char** argv)
 	logNetwork->infoStream() << "Port " << port << " will be used.";
 
 	loadDLLClasses();
+#else
+	port = server_port;
+	logNetwork->infoStream() << "Port " << port << " will be used.";
+#endif // __IOS__
+
 	srand ( (ui32)time(nullptr) );
 	try
 	{

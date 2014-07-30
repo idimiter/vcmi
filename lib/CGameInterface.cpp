@@ -22,7 +22,7 @@
  *
  */
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 // we can't use shared libraries on Android so here's a hack
 extern "C" DLL_EXPORT void VCAI_GetAiName(char* name);
 extern "C" DLL_EXPORT void VCAI_GetNewAI(shared_ptr<CGlobalAI> &out);
@@ -45,7 +45,7 @@ shared_ptr<rett> createAny(std::string dllname, std::string methodName)
 	TGetAIFun getAI = nullptr;
 	TGetNameFun getName = nullptr;
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 	// this is awful but it seems using shared libraries on some devices is even worse
 	if (dllname.find("libVCAI.so") != std::string::npos) {
 		getName = (TGetNameFun)VCAI_GetAiName;
@@ -59,8 +59,7 @@ shared_ptr<rett> createAny(std::string dllname, std::string methodName)
 	} else {
 		throw std::runtime_error("Don't know what to do with " + dllname + " and method " + methodName);
 	}
-#else
-
+#ifndef __IOS__ // I don't want to actualy link the .so
 #ifdef _WIN32
 	HINSTANCE dll = LoadLibraryA(dllname.c_str());
 	if (dll)
@@ -93,6 +92,8 @@ shared_ptr<rett> createAny(std::string dllname, std::string methodName)
 #endif
 		throw std::runtime_error("Cannot find method " + methodName);
 	}
+
+#endif // __IOS__
 
 #endif // __ANDROID__
 

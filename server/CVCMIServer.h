@@ -97,4 +97,6 @@ public:
 	void startListeningThread(CConnection * pc);
 };
 
+#ifndef __IOS__
 extern boost::program_options::variables_map cmdLineOptions;
+#endif // __IOS__
