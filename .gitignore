@@ -8,3 +8,4 @@
 *.pro.user
 *.pro.user.*
 /CMakeLists.txt.user
+.DS_Store
