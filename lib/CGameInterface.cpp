@@ -59,7 +59,8 @@ shared_ptr<rett> createAny(std::string dllname, std::string methodName)
 	} else {
 		throw std::runtime_error("Don't know what to do with " + dllname + " and method " + methodName);
 	}
-#ifndef __IOS__ // I don't want to actualy link the .so
+#else
+
 #ifdef _WIN32
 	HINSTANCE dll = LoadLibraryA(dllname.c_str());
 	if (dll)
@@ -92,8 +93,6 @@ shared_ptr<rett> createAny(std::string dllname, std::string methodName)
 #endif
 		throw std::runtime_error("Cannot find method " + methodName);
 	}
-
-#endif // __IOS__
 
 #endif // __ANDROID__
 
