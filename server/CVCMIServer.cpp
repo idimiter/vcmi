@@ -611,7 +611,7 @@ void handleLinuxSignal(int sig)
 #ifdef __IOS__
 int server_main(int server_port) {
 
-	if(fork() != 0)	return 0; // TEMPORARY!!! JUST FOR TESTING ON THE EMULATOR. TODO:: Find other way to run the server
+//	if(fork() != 0)	return 0; // TEMPORARY!!! JUST FOR TESTING ON THE EMULATOR. TODO:: Find other way to run the server
 
 #else
 int main(int argc, char** argv)

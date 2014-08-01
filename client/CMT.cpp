@@ -866,7 +866,9 @@ static bool recreateWindow(int w, int h, int bpp, bool fullscreen)
 	if(!checkVideoMode(0,w,h,suggestedBpp,fullscreen))
 	{
 		logGlobal->errorStream() << "Error: SDL says that " << w << "x" << h << " resolution is not available!";
+#ifndef __IOS__ // In order to play on iPad
 		return false;
+#endif
 	}	
 	
 	bool bufOnScreen = (screenBuf == screen);

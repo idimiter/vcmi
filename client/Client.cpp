@@ -850,7 +850,11 @@ CServerHandler::CServerHandler(bool runServer /*= false*/)
 	serverThread = nullptr;
 	shared = nullptr;
 	port = boost::lexical_cast<std::string>(settings["server"]["port"].Float());
+#ifdef __IOS__
+	verbose = false;
+#else
 	verbose = true;
+#endif // __IOS__
 
 #ifndef __ANDROID__
 	boost::interprocess::shared_memory_object::remove("vcmi_memory"); //if the application has previously crashed, the memory may not have been removed. to avoid problems - try to destroy it
@@ -875,9 +879,9 @@ void CServerHandler::callServer()
 #ifdef __IOS__
 	int result = 0;
 
-	dispatch_async(dispatch_get_main_queue(), ^{
+//	dispatch_async(dispatch_get_main_queue(), ^{
 		server_main( boost::lexical_cast<int>(port) );
-	});
+//	});
 
 #else
 	int result = std::system(comm.c_str());

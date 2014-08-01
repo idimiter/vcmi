@@ -23,7 +23,7 @@
 
 using namespace boost::assign;
 
-IGameCallback * IObjectInterface::cb = nullptr;
+IGameCallbackHolder IObjectInterface::cb; // 01.08.2014
 
 ///helpers
 static void openWindow(const OpenWindow::EWindow type, const int id1, const int id2 = -1)

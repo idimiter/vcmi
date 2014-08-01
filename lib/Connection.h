@@ -266,6 +266,25 @@ public:
 
 extern DLL_LINKAGE CTypeList typeList;
 
+//<--------------- 31.07.2014 --------------------------------->
+class CTypeListManager {
+	static boost::mutex list_mutex;
+	static std::map<int, CTypeList> typeLists;
+public:
+	static CTypeList& get_typeList()
+	{
+		boost::unique_lock<boost::mutex> lock(list_mutex);
+		std::string str_thread_id = boost::lexical_cast<std::string>(boost::this_thread::get_id());
+
+		unsigned long threadNumber = 0;
+		sscanf(str_thread_id.c_str(), "%lx", &threadNumber);
+
+		int id = std::abs((int)threadNumber);
+
+		return typeLists[id];
+	}
+};
+//-------------------------------------------------------
 
 template<typename Ser>
 struct SaveBoolean
@@ -736,6 +755,7 @@ public:
 	template<typename T>
 	void addSaver(const T * t = nullptr)
 	{
+		CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 		auto ID = typeList.getTypeID(t);
 		if(!savers.count(ID))
 			savers[ID] = new CPointerSaver<COSer<Serializer>, T>;
@@ -743,6 +763,7 @@ public:
 
 	template<typename Base, typename Derived> void registerType(const Base * b = nullptr, const Derived * d = nullptr)
 	{
+		CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 		typeList.registerType(b, d);
 		addSaver(b);
 		addSaver(d);
@@ -806,6 +827,8 @@ public:
 			if(gotSaved)
 				return;
 		}
+		
+		CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 
 		if(smartPointerSerialization)
 		{
@@ -837,6 +860,7 @@ public:
 	template <typename T>
 	void savePointerHlp(ui16 tid, const T &data)
 	{
+		CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 		if(!tid)
 			*this << *data;	 //if type is unregistered simply write all data in a standard way
 		else
@@ -1092,6 +1116,7 @@ public:
 	template<typename T>
 	void addLoader(const T * t = nullptr)
 	{
+		CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 		auto ID = typeList.getTypeID(t);
 		if(!loaders.count(ID))
 			loaders[ID] = new CPointerLoader<CISer<Serializer>, T>;
@@ -1099,6 +1124,7 @@ public:
 
 	template<typename Base, typename Derived> void registerType(const Base * b = nullptr, const Derived * d = nullptr)
 	{
+		CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 		typeList.registerType(b, d);
 		addLoader(b);
 		addLoader(d);
@@ -1244,6 +1270,7 @@ public:
 				// We already got this pointer
 				// Cast it in case we are loading it to a non-first base pointer
 				assert(loadedPointersTypes.count(pid));
+				CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 				data = reinterpret_cast<T>(typeList.castRaw(i->second, loadedPointersTypes.at(pid), &typeid(typename boost::remove_const<typename boost::remove_pointer<T>::type>::type)));
 				return;
 			}
@@ -1269,6 +1296,7 @@ public:
 		}
 		else
 		{
+			CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 			auto typeInfo = loaders[tid]->loadPtr(*this,&data, pid);
 			data = reinterpret_cast<T>(typeList.castRaw((void*)data, typeInfo, &typeid(typename boost::remove_const<typename boost::remove_pointer<T>::type>::type)));
 		}
@@ -1300,7 +1328,8 @@ public:
 		typedef typename boost::remove_const<T>::type NonConstT;
 		NonConstT *internalPtr;
 		*this >> internalPtr;
-
+		
+		CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 		void *internalPtrDerived = typeList.castToMostDerived(internalPtr);
 
 		if(internalPtr)
@@ -1663,6 +1692,7 @@ public:
 	template<typename Base, typename Derived>
 	void registerType(const Base * b = nullptr, const Derived * d = nullptr)
 	{
+		CTypeList &typeList = CTypeListManager::get_typeList(); // 31.07.2014
 		typeList.registerType(b, d);
 		addApplier<Base>(typeList.getTypeID(b));
 		addApplier<Derived>(typeList.getTypeID(d));

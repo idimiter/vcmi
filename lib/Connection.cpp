@@ -1,6 +1,11 @@
 #include "StdInc.h"
 #include "Connection.h"
 
+// 31.07.2014
+boost::mutex CTypeListManager::list_mutex;
+std::map<int, CTypeList> CTypeListManager::typeLists;
+//
+
 #include "registerTypes/RegisterTypes.h"
 
 #include <boost/asio.hpp>
