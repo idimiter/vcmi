@@ -3,7 +3,7 @@
 
 // 31.07.2014
 boost::mutex CTypeListManager::list_mutex;
-std::map<int, CTypeList> CTypeListManager::typeLists;
+std::map<boost::thread::id, CTypeList> CTypeListManager::typeLists;
 //
 
 #include "registerTypes/RegisterTypes.h"

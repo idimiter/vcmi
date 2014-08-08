@@ -27,7 +27,6 @@
 		B585D013197FFF410085B38B /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585D012197FFF410085B38B /* AudioToolbox.framework */; };
 		B585D015197FFF780085B38B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585D014197FFF770085B38B /* ImageIO.framework */; };
 		B585D017197FFFDE0085B38B /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B585D016197FFFDE0085B38B /* MobileCoreServices.framework */; };
-		B585D024198010560085B38B /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B585D01E1980046E0085B38B /* libstdc++.6.0.9.dylib */; };
 		B5E8B75C1988E43E00DC2C1B /* BattleAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B6861988E43E00DC2C1B /* BattleAction.cpp */; };
 		B5E8B75D1988E43E00DC2C1B /* BattleHex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B6881988E43E00DC2C1B /* BattleHex.cpp */; };
 		B5E8B75E1988E43E00DC2C1B /* BattleState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B68A1988E43E00DC2C1B /* BattleState.cpp */; };
@@ -248,8 +247,6 @@
 		B585D012197FFF410085B38B /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B585D014197FFF770085B38B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		B585D016197FFFDE0085B38B /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		B585D01C1980040B0085B38B /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
-		B585D01E1980046E0085B38B /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		B585D0201980047E0085B38B /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		B5E8B6851988E43E00DC2C1B /* AI_Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AI_Base.h; sourceTree = "<group>"; };
 		B5E8B6861988E43E00DC2C1B /* BattleAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleAction.cpp; sourceTree = "<group>"; };
@@ -654,7 +651,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B54D4785198698DA00A8E635 /* libavutil.a in Frameworks */,
-				B585D024198010560085B38B /* libstdc++.6.0.9.dylib in Frameworks */,
 				B585D017197FFFDE0085B38B /* MobileCoreServices.framework in Frameworks */,
 				B54D4782198698DA00A8E635 /* libavcodec.a in Frameworks */,
 				B54D4784198698DA00A8E635 /* libavformat.a in Frameworks */,
@@ -703,8 +699,6 @@
 				B54D477F198698DA00A8E635 /* libavutil.a */,
 				B54D4781198698DA00A8E635 /* libswscale.a */,
 				B585D0201980047E0085B38B /* libstdc++.dylib */,
-				B585D01E1980046E0085B38B /* libstdc++.6.0.9.dylib */,
-				B585D01C1980040B0085B38B /* libc++.dylib */,
 				B585D016197FFFDE0085B38B /* MobileCoreServices.framework */,
 				B585D014197FFF770085B38B /* ImageIO.framework */,
 				B585D012197FFF410085B38B /* AudioToolbox.framework */,

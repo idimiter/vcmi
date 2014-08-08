@@ -269,19 +269,12 @@ extern DLL_LINKAGE CTypeList typeList;
 //<--------------- 31.07.2014 --------------------------------->
 class CTypeListManager {
 	static boost::mutex list_mutex;
-	static std::map<int, CTypeList> typeLists;
+	static std::map<boost::thread::id, CTypeList> typeLists;
 public:
 	static CTypeList& get_typeList()
 	{
 		boost::unique_lock<boost::mutex> lock(list_mutex);
-		std::string str_thread_id = boost::lexical_cast<std::string>(boost::this_thread::get_id());
-
-		unsigned long threadNumber = 0;
-		sscanf(str_thread_id.c_str(), "%lx", &threadNumber);
-
-		int id = std::abs((int)threadNumber);
-
-		return typeLists[id];
+		return typeLists[boost::this_thread::get_id()];
 	}
 };
 //-------------------------------------------------------
