@@ -46,7 +46,7 @@
 namespace fl {
 
     Antecedent::Antecedent()
-    : _text(""), _expression(fl::null) {
+    : _text(""), _expression(NULL) {
     }
 
     Antecedent::~Antecedent() {
@@ -66,7 +66,7 @@ namespace fl {
     }
 
     bool Antecedent::isLoaded() const {
-        return this->_expression != fl::null;
+        return this->_expression != NULL;
     }
 
     scalar Antecedent::activationDegree(const TNorm* conjunction, const SNorm* disjunction) const {
@@ -138,7 +138,7 @@ namespace fl {
     void Antecedent::unload() {
         if (_expression) {
             delete _expression;
-            _expression = fl::null;
+            _expression = NULL;
         }
     }
 
@@ -174,11 +174,11 @@ namespace fl {
         };
         int state = S_VARIABLE;
         std::stack<Expression*> expressionStack;
-        Proposition* proposition = fl::null;
+        Proposition* proposition = NULL;
         try {
             while (tokenizer >> token) {
                 if (state bitand S_VARIABLE) {
-                    Variable* variable = fl::null;
+                    Variable* variable = NULL;
                     if (engine->hasInputVariable(token)) variable = engine->getInputVariable(token);
                     else if (engine->hasOutputVariable(token)) variable = engine->getOutputVariable(token);
                     if (variable) {

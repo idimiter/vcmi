@@ -46,7 +46,7 @@ namespace fl {
         Accumulated(const std::string& name = "",
                 scalar minimum = fl::nan,
                 scalar maximum = fl::nan,
-                SNorm* accumulation = fl::null);
+                SNorm* accumulation = (SNorm*) NULL);
         Accumulated(const Accumulated& other);
         Accumulated& operator=(const Accumulated& other);
         virtual ~Accumulated() FL_IOVERRIDE;

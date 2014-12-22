@@ -104,11 +104,11 @@ namespace fl {
         if (it != this->_hedges.end()) {
             if (it->second) return it->second;
         }
-        return fl::null;
+        return (Hedge *) NULL;
     }
 
     Hedge* Rule::removeHedge(const std::string& name) {
-        Hedge* result = fl::null;
+        Hedge* result = (Hedge *) NULL;
         std::map<std::string, Hedge*>::iterator it = this->_hedges.find(name);
         if (it != this->_hedges.end()) {
             result = it->second;

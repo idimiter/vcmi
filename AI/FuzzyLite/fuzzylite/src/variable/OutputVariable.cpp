@@ -46,8 +46,8 @@ namespace fl {
 
     OutputVariable& OutputVariable::operator=(const OutputVariable& other) {
         if (this != &other) {
-            _fuzzyOutput.reset(fl::null);
-            _defuzzifier.reset(fl::null);
+            _fuzzyOutput.reset(NULL);
+            _defuzzifier.reset(NULL);
 
             Variable::operator=(other);
             copyFrom(other);

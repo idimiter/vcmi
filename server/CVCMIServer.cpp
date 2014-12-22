@@ -524,15 +524,12 @@ void CVCMIServer::loadGame()
 			}
 #ifndef __IOS__
 			cc = new CConnection(s,NAME);
-<<<<<<< HEAD
 #else
 			cc = new CConnection(s,SERVER_NAME);
 #endif // __IOS__
 
 			cc->addStdVecItems(gh.gs);
-=======
->>>>>>> master/develop
-		}	
+		}
 		gh.conns.insert(cc);
 	}
 
@@ -630,14 +627,11 @@ int main(int argc, char** argv)
 	CBasicLogConfigurator logConfig(VCMIDirs::get().userCachePath() / "VCMI_Server_log.txt", console);
 	logConfig.configureDefault();
 
-<<<<<<< HEAD
 #ifndef __IOS__
 	preinitDLL(console);
     settings.init();
 	logConfig.configure();
 
-=======
->>>>>>> master/develop
 	handleCommandOptions(argc, argv);
 	port = cmdLineOptions["port"].as<int>();
 	logNetwork->infoStream() << "Port " << port << " will be used.";

@@ -35,7 +35,7 @@
 namespace fl {
 
     DefuzzifierFactory::DefuzzifierFactory() : ConstructionFactory<Defuzzifier*>("Defuzzifier") {
-        registerConstructor("", fl::null);
+        registerConstructor("", NULL);
         registerConstructor(Bisector().className(), &(Bisector::constructor));
         registerConstructor(Centroid().className(), &(Centroid::constructor));
         registerConstructor(LargestOfMaximum().className(), &(LargestOfMaximum::constructor));

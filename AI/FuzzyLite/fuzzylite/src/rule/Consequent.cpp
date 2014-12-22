@@ -119,7 +119,7 @@ namespace fl {
         };
         int state = S_VARIABLE;
 
-        Proposition* proposition = fl::null;
+        Proposition* proposition = NULL;
 
         std::stringstream tokenizer(consequent);
         std::string token;

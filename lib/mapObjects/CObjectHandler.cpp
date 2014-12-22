@@ -21,7 +21,8 @@
 
 #include "CObjectClassesHandler.h"
 
-IGameCallbackHolder * IObjectInterface::cb = nullptr; // 01.08.2014
+//IGameCallbackHolder * IObjectInterface::cb = nullptr; // 01.08.2014
+IGameCallback * IObjectInterface::cb = nullptr;
 
 ///helpers
 static void openWindow(const OpenWindow::EWindow type, const int id1, const int id2 = -1)

@@ -37,7 +37,7 @@ namespace fl {
     public:
         Linear(const std::string& name = "",
                 const std::vector<scalar>& coefficients = std::vector<scalar>(),
-                const Engine* engine = fl::null);
+                const Engine* engine = (Engine *) NULL);
         virtual ~Linear() FL_IOVERRIDE;
         FL_DEFAULT_COPY_AND_MOVE(Linear)
 

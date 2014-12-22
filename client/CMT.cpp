@@ -51,9 +51,8 @@
 #undef main
 #endif
 
-#ifndef __IOS__
+
 namespace bfs = boost::filesystem;
-#endif
 
 /*
  * CMT.cpp, part of VCMI engine
@@ -1269,11 +1268,15 @@ void startGame(StartInfo * options, CConnection *serv/* = nullptr*/)
 	case StartInfo::LOAD_GAME:
 		std::string fname = options->mapname;
 		boost::algorithm::erase_last(fname,".vlgm1");
+#ifndef __IOS__
         if(!vm.count("loadplayer"))
             client->loadGame(fname);
         else
             client->loadGame(fname,vm.count("loadserver"),vm.count("loadhumanplayerindices") ? vm["loadhumanplayerindices"].as<std::vector<int>>() : std::vector<int>(),vm.count("loadnumplayers") ? vm["loadnumplayers"].as<int>() : 1,vm["loadplayer"].as<int>(),vm.count("loadserverip") ? vm["loadserverip"].as<std::string>() : "", vm.count("loadserverport") ? vm["loadserverport"].as<std::string>() : "3030");
 		break;
+#else
+			client->loadGame(fname);
+#endif
 	}
 
 		client->connectionHandler = new boost::thread(&CClient::run, client);

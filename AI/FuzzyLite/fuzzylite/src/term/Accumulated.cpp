@@ -44,7 +44,7 @@ namespace fl {
     Accumulated& Accumulated::operator=(const Accumulated& other) {
         if (this != &other) {
             clear();
-            _accumulation.reset(fl::null);
+            _accumulation.reset(NULL);
 
             Term::operator=(other);
             copyFrom(other);

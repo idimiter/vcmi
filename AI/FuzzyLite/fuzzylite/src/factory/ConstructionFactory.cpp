@@ -75,7 +75,7 @@ namespace fl {
         if (it != this->_constructors.end()) {
             return it->second;
         }
-        return fl::null;
+        return NULL;
     }
 
     template <typename T>
@@ -85,7 +85,7 @@ namespace fl {
             if (it->second) {
                 return it->second();
             }
-            return fl::null;
+            return NULL;
         }
         std::ostringstream ss;
         ss << "[factory error] constructor of " + _name + " <" << key << "> not registered";

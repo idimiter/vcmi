@@ -142,7 +142,8 @@ namespace fl {
     //C++98 defines
 
     //Pointers
-    const long null = 0L;
+const long null = 0L;
+
 #define FL_unique_ptr std::auto_ptr
 #define FL_move_ptr(x) x
 

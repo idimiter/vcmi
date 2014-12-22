@@ -35,7 +35,7 @@
 namespace fl {
 
     HedgeFactory::HedgeFactory() : ConstructionFactory<Hedge*>("Hedge") {
-        registerConstructor("", fl::null);
+        registerConstructor("", NULL);
         registerConstructor(Any().name(), &(Any::constructor));
         registerConstructor(Extremely().name(), &(Extremely::constructor));
         registerConstructor(Not().name(), &(Not::constructor));

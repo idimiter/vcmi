@@ -84,7 +84,7 @@ namespace fl {
             std::string variable;
             scalar value;
 
-            Node(Element* element, Node* left = fl::null, Node* right = fl::null);
+            Node(Element* element, Node* left = (Node*) NULL, Node* right = (Node*) NULL);
             Node(const std::string& variable);
             Node(scalar value);
             Node(const Node& source);
@@ -93,14 +93,14 @@ namespace fl {
             FL_DEFAULT_MOVE(Node)
 
             virtual scalar evaluate(const std::map<std::string, scalar>*
-                    variables = fl::null) const;
+                    variables = (const std::map<std::string, scalar>*) NULL) const;
 
             virtual Node* clone() const;
 
             virtual std::string toString() const;
-            virtual std::string toPrefix(const Node* node = fl::null) const;
-            virtual std::string toInfix(const Node* node = fl::null) const;
-            virtual std::string toPostfix(const Node* node = fl::null) const;
+            virtual std::string toPrefix(const Node* node = (Node*) NULL) const;
+            virtual std::string toInfix(const Node* node =  (Node*) NULL) const;
+            virtual std::string toPostfix(const Node* node =  (Node*) NULL) const;
         private:
             void copyFrom(const Node& source);
         };
@@ -119,7 +119,7 @@ namespace fl {
     public:
         mutable std::map<std::string, scalar> variables;
         Function(const std::string& name = "",
-                const std::string& formula = "", const Engine* engine = fl::null);
+                const std::string& formula = "", const Engine* engine = (Engine *) NULL);
         Function(const Function& other);
         Function& operator=(const Function& other);
         virtual ~Function() FL_IOVERRIDE;
@@ -127,7 +127,7 @@ namespace fl {
 
         static Function* create(const std::string& name,
                 const std::string& formula,
-                const Engine* engine = fl::null); // throw (fl::Exception);
+                const Engine* engine = (Engine*) NULL); // throw (fl::Exception);
 
         virtual scalar membership(scalar x) const FL_IOVERRIDE;
 

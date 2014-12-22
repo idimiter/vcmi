@@ -22,32 +22,32 @@ class CGObjectInstance;
 struct MetaString;
 struct BattleResult;
 
-//<--------------------------- 01.08.2014 --------------------------
-class IGameCallbackHolder {
-	boost::mutex Callback_mutex;
-	std::map<boost::thread::id, IGameCallback*> callbacks;
-public:
-	IGameCallbackHolder() {}
-	~IGameCallbackHolder() {}
-	IGameCallbackHolder& operator=(IGameCallback *cb)
-	{
-		boost::unique_lock<boost::mutex> lock(Callback_mutex);
-		callbacks[boost::this_thread::get_id()] = cb; // hold pointer by thread
-		return *this;
-	}
-	IGameCallback* operator->()
-	{
-		boost::unique_lock<boost::mutex> lock(Callback_mutex);
-		return callbacks[boost::this_thread::get_id()];
-	}
-};
-//------------------------------------------------------------------
+////<--------------------------- 01.08.2014 --------------------------
+//class IGameCallbackHolder {
+//	boost::mutex Callback_mutex;
+//	std::map<boost::thread::id, IGameCallback*> callbacks;
+//public:
+//	IGameCallbackHolder() {}
+//	~IGameCallbackHolder() {}
+//	IGameCallbackHolder& operator=(IGameCallback *cb)
+//	{
+//		boost::unique_lock<boost::mutex> lock(Callback_mutex);
+//		callbacks[boost::this_thread::get_id()] = cb; // hold pointer by thread
+//		return *this;
+//	}
+//	IGameCallback* operator->()
+//	{
+//		boost::unique_lock<boost::mutex> lock(Callback_mutex);
+//		return callbacks[boost::this_thread::get_id()];
+//	}
+//};
+////------------------------------------------------------------------
 
 class DLL_LINKAGE IObjectInterface
 {
 public:
-	static IGameCallbackHolder * cb; // 01.08.2014
-//	static IGameCallback *cb;
+//	static IGameCallbackHolder * cb; // 01.08.2014
+	static IGameCallback *cb;
 
 	IObjectInterface();
 	virtual ~IObjectInterface();

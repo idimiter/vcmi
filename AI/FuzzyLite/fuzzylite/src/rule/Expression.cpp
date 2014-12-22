@@ -38,7 +38,7 @@ namespace fl {
     }
 
     Proposition::Proposition()
-    : Expression(), variable(fl::null), term(fl::null) {
+    : Expression(), variable(NULL), term(NULL) {
     }
 
     Proposition::~Proposition() {
@@ -59,7 +59,7 @@ namespace fl {
             }
         }
 
-        if (term) { //term is fl::null if hedge is any
+        if (term) { //term is NULL if hedge is any
             if (hedges.empty()) {
                 ss << " " << Rule::isKeyword() << " ";
             }
@@ -68,7 +68,7 @@ namespace fl {
         return ss.str();
     }
 
-    Operator::Operator() : Expression(), name(""), left(fl::null), right(fl::null) {
+    Operator::Operator() : Expression(), name(""), left(NULL), right(NULL) {
     }
 
     Operator::~Operator() {

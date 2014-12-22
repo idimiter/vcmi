@@ -48,9 +48,9 @@ namespace fl {
                 delete _rules.at(i);
             }
             _rules.clear();
-            _conjunction.reset(fl::null);
-            _disjunction.reset(fl::null);
-            _activation.reset(fl::null);
+            _conjunction.reset(NULL);
+            _disjunction.reset(NULL);
+            _activation.reset(NULL);
 
             copyFrom(other);
         }

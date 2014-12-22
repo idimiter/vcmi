@@ -37,8 +37,8 @@ namespace fl {
         const TNorm* _activation;
 
     public:
-        Activated(const Term* term = fl::null, scalar degree = 1.0,
-                const TNorm* activationOperator = fl::null);
+        Activated(const Term* term = (Term*) NULL, scalar degree = 1.0,
+                const TNorm* activationOperator = (TNorm*) NULL);
         virtual ~Activated() FL_IOVERRIDE;
         FL_DEFAULT_COPY_AND_MOVE(Activated)
 

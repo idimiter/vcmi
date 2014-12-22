@@ -76,9 +76,9 @@ namespace fl {
         if (engine->numberOfRuleBlocks() > 0)
             fis << "NumRules=" << engine->getRuleBlock(0)->numberOfRules() << "\n";
 
-        const TNorm* tnorm = fl::null;
-        const SNorm* snorm = fl::null;
-        const TNorm* activation = fl::null;
+        const TNorm* tnorm = NULL;
+        const SNorm* snorm = NULL;
+        const TNorm* activation = NULL;
         std::string uniquenessError;
         for (int i = 0; i < engine->numberOfRuleBlocks(); ++i) {
             RuleBlock* rb = engine->getRuleBlock(i);
@@ -108,8 +108,8 @@ namespace fl {
         fis << "OrMethod='" << toString(snorm) << "'\n";
         fis << "ImpMethod='" << toString(activation) << "'\n";
 
-        const SNorm* accumulation = fl::null;
-        Defuzzifier* defuzzifier = fl::null;
+        const SNorm* accumulation = NULL;
+        Defuzzifier* defuzzifier = NULL;
         for (int i = 0; i < engine->numberOfOutputVariables(); ++i) {
             OutputVariable* outputVariable = engine->getOutputVariable(i);
             std::string defuzzClass = outputVariable->getDefuzzifier() ?

@@ -98,7 +98,7 @@ namespace fl {
         void* buffer[bufferSize];
         int backtraceSize = backtrace(buffer, bufferSize);
         char **btSymbols = backtrace_symbols(buffer, backtraceSize);
-        if (btSymbols == fl::null) {
+        if (btSymbols == NULL) {
             btStream << "[backtrace error] no symbols could be retrieved";
         } else {
             if (backtraceSize == 0) btStream << "[backtrace is empty]";
@@ -114,9 +114,9 @@ namespace fl {
         std::ostringstream btStream;
         const int bufferSize = 30;
         void* buffer[bufferSize];
-        SymInitialize(GetCurrentProcess(), fl::null, TRUE);
+        SymInitialize(GetCurrentProcess(), NULL, TRUE);
 
-        int backtraceSize = CaptureStackBackTrace(0, bufferSize, buffer, fl::null);
+        int backtraceSize = CaptureStackBackTrace(0, bufferSize, buffer, NULL);
         SYMBOL_INFO* btSymbol = (SYMBOL_INFO *) calloc(sizeof ( SYMBOL_INFO) + 256 * sizeof ( char), 1);
         if (not btSymbol) {
             btStream << "[backtrace error] no symbols could be retrieved";
@@ -156,7 +156,7 @@ namespace fl {
         sigset_t empty;
         sigemptyset(&empty);
         sigaddset(&empty, signal);
-        sigprocmask(SIG_UNBLOCK, &empty, fl::null);
+        sigprocmask(SIG_UNBLOCK, &empty, NULL);
         signalDescription = strsignal(signal);
 #endif
         std::ostringstream ex;

@@ -159,7 +159,7 @@ namespace fl {
     }
 
     std::string CppExporter::toString(const Term* term) const {
-        if (not term) return "fl::null";
+        if (not term) return "NULL";
 
         if (const Discrete * discrete = dynamic_cast<const Discrete*> (term)) {
             std::ostringstream ss;
@@ -200,12 +200,12 @@ namespace fl {
     }
 
     std::string CppExporter::toString(const Norm* op) const {
-        if (not op) return "fl::null";
+        if (not op) return "NULL";
         return "new " + fl(op->className());
     }
 
     std::string CppExporter::toString(const Defuzzifier* defuzzifier) const {
-        if (not defuzzifier) return "fl::null";
+        if (not defuzzifier) return "NULL";
         if (const IntegralDefuzzifier * integralDefuzzifier =
                 dynamic_cast<const IntegralDefuzzifier*> (defuzzifier)) {
             return "new " + fl(integralDefuzzifier->className()) + "("
