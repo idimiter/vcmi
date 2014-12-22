@@ -616,12 +616,15 @@ DLL_LINKAGE void GiveHero::applyGs( CGameState *gs )
 
 DLL_LINKAGE void NewObject::applyGs( CGameState *gs )
 {
+	const TerrainTile &t = gs->map->getTile(pos);
+	ETerrainType terrainType = t.terType;
 
 	CGObjectInstance *o = nullptr;
 	switch(ID)
 	{
 	case Obj::BOAT:
 		o = new CGBoat();
+		terrainType = ETerrainType::WATER; //TODO: either boat should only spawn on water, or all water objects should be handled this way
 		break;
 	case Obj::MONSTER: //probably more options will be needed
 		o = new CGCreature();
@@ -643,8 +646,7 @@ DLL_LINKAGE void NewObject::applyGs( CGameState *gs )
 	o->ID = ID;
 	o->subID = subID;
 	o->pos = pos;
-	const TerrainTile &t = gs->map->getTile(pos);
-	o->appearance = VLC->objtypeh->getHandlerFor(o->ID, o->subID)->getTemplates(t.terType).front();
+	o->appearance = VLC->objtypeh->getHandlerFor(o->ID, o->subID)->getTemplates(terrainType).front();
 	id = o->id = ObjectInstanceID(gs->map->objects.size());
 
 	gs->map->objects.push_back(o);
@@ -1195,6 +1197,7 @@ void BattleResult::applyGs( CGameState *gs )
 void BattleStackMoved::applyGs( CGameState *gs )
 {
 	CStack *s = gs->curB->getStack(stack);
+	assert(s);
 	BattleHex dest = tilesToMove.back();
 
 	//if unit ended movement on quicksands that were created by enemy, that quicksand patch becomes visible for owner
@@ -1656,11 +1659,6 @@ DLL_LINKAGE void YourTurn::applyGs( CGameState *gs )
 	{
 		playerState.daysWithoutCastle = boost::none;
 	}
-}
-
-DLL_LINKAGE void SetSelection::applyGs( CGameState *gs )
-{
-	gs->getPlayer(player)->currentSelection = id;
 }
 
 DLL_LINKAGE Component::Component(const CStackBasicDescriptor &stack)

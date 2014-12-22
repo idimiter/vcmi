@@ -17,7 +17,7 @@
 #include "../lib/CSoundBase.h"
 #include "../lib/StartInfo.h"
 #include "mapHandler.h"
-#include "GUIClasses.h"
+#include "windows/GUIClasses.h"
 #include "../lib/CConfigHandler.h"
 #include "gui/SDL_Extensions.h"
 #include "battle/CBattleInterface.h"
@@ -26,6 +26,8 @@
 #include "../lib/BattleState.h"
 #include "../lib/GameConstants.h"
 #include "gui/CGuiHandler.h"
+#include "widgets/MiscWidgets.h"
+#include "widgets/AdventureMapClasses.h"
 #include "CMT.h"
 
 //macros to avoid code duplication - calls given method with given arguments if interface for specific player is present
@@ -158,7 +160,7 @@ void SetMana::applyCl( CClient *cl )
 void SetMovePoints::applyCl( CClient *cl )
 {
 	const CGHeroInstance *h = cl->getHero(hid);
-	cl->invalidatePaths(h);
+	cl->invalidatePaths();
 	INTERFACE_CALL_IF_PRESENT(h->tempOwner, heroMovePointsChanged, h);
 }
 
@@ -820,15 +822,6 @@ void PlayerMessage::applyCl(CClient *cl)
 		LOCPLINT->cingconsole->print(str.str());
 }
 
-void SetSelection::applyCl(CClient *cl)
-{
-	const CGHeroInstance *h = cl->getHero(id);
-	if(!h)
-		return;
-
-	//CPackForClient::GS(cl)->calculatePaths(h, *cl->pathInfo);
-}
-
 void ShowInInfobox::applyCl(CClient *cl)
 {
 	INTERFACE_CALL_IF_PRESENT(player,showComp, c, text.toString());
@@ -912,7 +905,7 @@ void CenterView::applyCl(CClient *cl)
 
 void NewObject::applyCl(CClient *cl)
 {
-	cl->updatePaths();
+	cl->invalidatePaths();
 
 	const CGObjectInstance *obj = cl->getObj(id);
 	CGI->mh->printObject(obj);

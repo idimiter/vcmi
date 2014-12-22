@@ -17,12 +17,8 @@
 			"type" : "object",
 			"default": {},
 			"additionalProperties" : false,
-			"required" : [ "classicCreatureWindow", "playerName", "showfps", "music", "sound", "encoding" ],
+			"required" : [ "playerName", "showfps", "music", "sound", "encoding" ],
 			"properties" : {
-				"classicCreatureWindow" : {
-					"type" : "boolean",
-					"default" : false
-				},
 				"playerName" : {
 					"type":"string",
 					"default" : "Player"
@@ -246,7 +242,7 @@
 			"type" : "object",
 			"default": {},
 			"additionalProperties" : false,
-			"required" : [ "repositoryURL", "enableInstalledMods" ],
+			"required" : [ "repositoryURL", "enableInstalledMods", "autoCheckRepositories" ],
 			"properties" : {
 				"repositoryURL" : {
 					"type" : "array",
@@ -258,6 +254,10 @@
 					},
 				},
 				"enableInstalledMods" : {
+					"type" : "boolean",
+					"default" : true
+				},
+				"autoCheckRepositories" : {
 					"type" : "boolean",
 					"default" : true
 				}

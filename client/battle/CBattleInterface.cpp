@@ -1,43 +1,40 @@
 #include "StdInc.h"
 #include "CBattleInterface.h"
 
-#include "../CGameInfo.h"
-#include "../gui/SDL_Extensions.h"
-#include "../CAdvmapInterface.h"
-#include "../CAnimation.h"
-#include "../CBitmapHandler.h"
-#include "../../lib/CHeroHandler.h"
-# include "../CDefHandler.h"
-#include "../../lib/CSpellHandler.h"
-#include "../CMusicHandler.h"
-#include "../CMessage.h"
-#include "../../CCallback.h"
-#include "../../lib/BattleState.h"
-#include "../../lib/CGeneralTextHandler.h"
-#include "CCreatureAnimation.h"
-#include "../Graphics.h"
-#include "../CSpellWindow.h"
-#include "../../lib/CConfigHandler.h"
-#include "../../lib/CondSh.h"
-#include "../../lib/NetPacks.h"
-#include "../CPlayerInterface.h"
-#include "../CCreatureWindow.h"
-#include "../CVideoHandler.h"
-#include "../../lib/CTownHandler.h"
-#include "../../lib/mapping/CMap.h"
-#include "../../lib/CRandomGenerator.h"
-
 #include "CBattleAnimations.h"
 #include "CBattleInterfaceClasses.h"
+#include "CCreatureAnimation.h"
 
+#include "../CBitmapHandler.h"
+#include "../CDefHandler.h"
+#include "../CGameInfo.h"
+#include "../CMessage.h"
+#include "../CMT.h"
+#include "../CMusicHandler.h"
+#include "../CPlayerInterface.h"
+#include "../CVideoHandler.h"
+#include "../Graphics.h"
 #include "../gui/CCursorHandler.h"
 #include "../gui/CGuiHandler.h"
-#include "../CMT.h"
+#include "../gui/SDL_Extensions.h"
+#include "../windows/CAdvmapInterface.h"
+#include "../windows/CCreatureWindow.h"
+#include "../windows/CSpellWindow.h"
 
-
+#include "../../CCallback.h"
+#include "../../lib/BattleState.h"
+#include "../../lib/CConfigHandler.h"
+#include "../../lib/CGeneralTextHandler.h"
+#include "../../lib/CHeroHandler.h"
+#include "../../lib/CondSh.h"
+#include "../../lib/CRandomGenerator.h"
+#include "../../lib/CSpellHandler.h"
+#include "../../lib/CTownHandler.h"
+#include "../../lib/CGameState.h"
+#include "../../lib/mapping/CMap.h"
+#include "../../lib/NetPacks.h"
 #include "../../lib/UnlockGuard.h"
 
-using namespace boost::assign;
 
 /*
  * CBattleInterface.cpp, part of VCMI engine
@@ -224,17 +221,17 @@ CBattleInterface::CBattleInterface(const CCreatureSet * army1, const CCreatureSe
 // 	blitAt(menu, pos.x, 556 + pos.y);
 
 	//preparing buttons and console
-	bOptions = new CAdventureMapButton (CGI->generaltexth->zelp[381].first, CGI->generaltexth->zelp[381].second, std::bind(&CBattleInterface::bOptionsf,this), 3, 561, "icm003.def", SDLK_o);
-	bSurrender = new CAdventureMapButton (CGI->generaltexth->zelp[379].first, CGI->generaltexth->zelp[379].second, std::bind(&CBattleInterface::bSurrenderf,this), 54, 561, "icm001.def", SDLK_s);
-	bFlee = new CAdventureMapButton (CGI->generaltexth->zelp[380].first, CGI->generaltexth->zelp[380].second, std::bind(&CBattleInterface::bFleef,this), 105, 561, "icm002.def", SDLK_r);
-	bAutofight  = new CAdventureMapButton (CGI->generaltexth->zelp[382].first, CGI->generaltexth->zelp[382].second, std::bind(&CBattleInterface::bAutofightf,this), 157, 561, "icm004.def", SDLK_a);
-	bSpell = new CAdventureMapButton (CGI->generaltexth->zelp[385].first, CGI->generaltexth->zelp[385].second, std::bind(&CBattleInterface::bSpellf,this), 645, 561, "icm005.def", SDLK_c);
-	bWait = new CAdventureMapButton (CGI->generaltexth->zelp[386].first, CGI->generaltexth->zelp[386].second, std::bind(&CBattleInterface::bWaitf,this), 696, 561, "icm006.def", SDLK_w);
-	bDefence = new CAdventureMapButton (CGI->generaltexth->zelp[387].first, CGI->generaltexth->zelp[387].second, std::bind(&CBattleInterface::bDefencef,this), 747, 561, "icm007.def", SDLK_d);
+	bOptions =     new CButton (Point(  3, 561), "icm003.def", CGI->generaltexth->zelp[381], std::bind(&CBattleInterface::bOptionsf,this), SDLK_o);
+	bSurrender =   new CButton (Point( 54, 561), "icm001.def", CGI->generaltexth->zelp[379], std::bind(&CBattleInterface::bSurrenderf,this), SDLK_s);
+	bFlee =        new CButton (Point(105, 561), "icm002.def", CGI->generaltexth->zelp[380], std::bind(&CBattleInterface::bFleef,this), SDLK_r);
+	bAutofight  =  new CButton (Point(157, 561), "icm004.def", CGI->generaltexth->zelp[382], std::bind(&CBattleInterface::bAutofightf,this), SDLK_a);
+	bSpell =       new CButton (Point(645, 561), "icm005.def", CGI->generaltexth->zelp[385], std::bind(&CBattleInterface::bSpellf,this), SDLK_c);
+	bWait =        new CButton (Point(696, 561), "icm006.def", CGI->generaltexth->zelp[386], std::bind(&CBattleInterface::bWaitf,this), SDLK_w);
+	bDefence =     new CButton (Point(747, 561), "icm007.def", CGI->generaltexth->zelp[387], std::bind(&CBattleInterface::bDefencef,this), SDLK_d);
 	bDefence->assignedKeys.insert(SDLK_SPACE);
-	bConsoleUp = new CAdventureMapButton (std::string(), std::string(), std::bind(&CBattleInterface::bConsoleUpf,this), 624, 561, "ComSlide.def", SDLK_UP);
-	bConsoleDown = new CAdventureMapButton (std::string(), std::string(), std::bind(&CBattleInterface::bConsoleDownf,this), 624, 580, "ComSlide.def", SDLK_DOWN);
-	bConsoleDown->setOffset(2);
+	bConsoleUp =   new CButton (Point(624, 561), "ComSlide.def", std::make_pair("", ""), std::bind(&CBattleInterface::bConsoleUpf,this), SDLK_UP);
+	bConsoleDown = new CButton (Point(624, 580), "ComSlide.def", std::make_pair("", ""), std::bind(&CBattleInterface::bConsoleDownf,this), SDLK_DOWN);
+	bConsoleDown->setImageOrder(2, 3, 4, 5);
 	console = new CBattleConsole();
 	console->pos.x += 211;
 	console->pos.y += 560;
@@ -242,8 +239,8 @@ CBattleInterface::CBattleInterface(const CCreatureSet * army1, const CCreatureSe
 	console->pos.h = 38;
 	if(tacticsMode)
 	{
-		btactNext = new CAdventureMapButton(std::string(), std::string(), std::bind(&CBattleInterface::bTacticNextStack,this, (CStack*)nullptr), 213, 560, "icm011.def", SDLK_SPACE);
-		btactEnd = new CAdventureMapButton(std::string(), std::string(), std::bind(&CBattleInterface::bEndTacticPhase,this), 419, 560, "icm012.def", SDLK_RETURN);
+		btactNext = new CButton(Point(213, 560), "icm011.def", std::make_pair("", ""), [&]{ bTacticNextStack(nullptr);}, SDLK_SPACE);
+		btactEnd =  new CButton(Point(419, 560), "icm012.def", std::make_pair("", ""), [&]{ bEndTacticPhase();}, SDLK_RETURN);
 		menu = BitmapHandler::loadBitmap("COPLACBR.BMP");
 	}
 	else
@@ -834,11 +831,10 @@ void CBattleInterface::bFleef()
 			if(defendingHeroInstance->tempOwner == curInt->cb->getMyColor())
 				heroName = defendingHeroInstance->name;
 		//calculating text
-		char buffer[1000];
-		sprintf(buffer, CGI->generaltexth->allTexts[340].c_str(), heroName.c_str()); //The Shackles of War are present.  %s can not retreat!
+		auto txt = boost::format(CGI->generaltexth->allTexts[340]) % heroName; //The Shackles of War are present.  %s can not retreat!
 
 		//printing message
-		curInt->showInfoDialog(std::string(buffer), comps);
+		curInt->showInfoDialog(boost::to_string(txt), comps);
 	}
 }
 
@@ -1038,8 +1034,9 @@ void CBattleInterface::stacksAreAttacked(std::vector<StackAttackedInfo> attacked
 {
 	for (auto & attackedInfo : attackedInfos)
 	{
-		if (!attackedInfo.cloneKilled) //FIXME: play dead animation for cloned creature before it vanishes
+		//if (!attackedInfo.cloneKilled) //FIXME: play dead animation for cloned creature before it vanishes
 			addNewAnim(new CDefenceAnimation(attackedInfo, this));
+
 		if (attackedInfo.rebirth)
 		{
 			displayEffect(50, attackedInfo.defender->position); //TODO: play reverse death animation
@@ -1054,12 +1051,6 @@ void CBattleInterface::stacksAreAttacked(std::vector<StackAttackedInfo> attacked
 		killed += attackedInfo.amountKilled;
 		damage += attackedInfo.dmg;
 	}
-	if (attackedInfos.front().cloneKilled) //FIXME: cloned stack is already removed
-		return;
-	if (targets > 1)
-		printConsoleAttacked(attackedInfos.front().defender, damage, killed, attackedInfos.front().attacker, true); //creatures perish
-	else
-		printConsoleAttacked(attackedInfos.front().defender, damage, killed, attackedInfos.front().attacker, false);
 
 	for(auto & attackedInfo : attackedInfos)
 	{
@@ -1068,6 +1059,15 @@ void CBattleInterface::stacksAreAttacked(std::vector<StackAttackedInfo> attacked
 		if (attackedInfo.cloneKilled)
 			stackRemoved(attackedInfo.defender->ID);
 	}
+
+/*	if (attackedInfos.front().cloneKilled) //FIXME: cloned stack is already removed
+		return;*/
+
+	if (targets > 1)
+		printConsoleAttacked(attackedInfos.front().defender, damage, killed, attackedInfos.front().attacker, true); //creatures perish
+	else
+		printConsoleAttacked(attackedInfos.front().defender, damage, killed, attackedInfos.front().attacker, false);
+
 }
 
 void CBattleInterface::stackAttacking( const CStack * attacker, BattleHex dest, const CStack * attacked, bool shooting )
@@ -1518,12 +1518,11 @@ void CBattleInterface::battleStacksEffectsSet(const SetStackEffect & sse)
 			if(stack->count != 1)
 				txtid++; //move to plural text
 
-			char txt[4000];
 			BonusList defenseBonuses = *(stack->getBonuses(Selector::typeSubtype(Bonus::PRIMARY_SKILL, PrimarySkill::DEFENSE)));
 			defenseBonuses.remove_if(Selector::durationType(Bonus::STACK_GETS_TURN)); //remove bonuses gained from defensive stance
 			int val = stack->Defense() - defenseBonuses.totalValue();
-			sprintf(txt, CGI->generaltexth->allTexts[txtid].c_str(),  (stack->count != 1) ? stack->getCreature()->namePl.c_str() : stack->getCreature()->nameSing.c_str(), val);
-			console->addText(txt);
+			auto txt = boost::format (CGI->generaltexth->allTexts[txtid]) % ((stack->count != 1) ? stack->getCreature()->namePl : stack->getCreature()->nameSing) % val;
+			console->addText(boost::to_string(txt));
 		}
 	}
 
@@ -1543,6 +1542,7 @@ void CBattleInterface::castThisSpell(int spellID)
 	ba->side = defendingHeroInstance ? (curInt->playerID == defendingHeroInstance->tempOwner) : false;
 	spellToCast = ba;
 	spellDestSelectMode = true;
+	creatureCasting = false;
 
 	//choosing possible tragets
 	const CGHeroInstance * castingHero = (attackingHeroInstance->tempOwner == curInt->playerID) ? attackingHeroInstance : defendingHeroInstance;
@@ -1735,7 +1735,8 @@ void CBattleInterface::getPossibleActionsForStack(const CStack * stack)
 	possibleActions.clear();
 	if (tacticsMode)
 	{
-		possibleActions += MOVE_TACTICS, CHOOSE_TACTICS_STACK;
+		possibleActions.push_back(MOVE_TACTICS);
+		possibleActions.push_back(CHOOSE_TACTICS_STACK);
 	}
 	else
 	{
@@ -1790,28 +1791,26 @@ void CBattleInterface::getPossibleActionsForStack(const CStack * stack)
 
 void CBattleInterface::printConsoleAttacked( const CStack * defender, int dmg, int killed, const CStack * attacker, bool multiple )
 {
-	char tabh[200] = {0};
+	boost::format txt;
 	int end = 0;
 	if (attacker) //ignore if stacks were killed by spell
 	{
-		end = sprintf(tabh, CGI->generaltexth->allTexts[attacker->count > 1 ? 377 : 376].c_str(),
-		(attacker->count > 1 ? attacker->getCreature()->namePl.c_str() : attacker->getCreature()->nameSing.c_str()), dmg);
+		txt = boost::format (CGI->generaltexth->allTexts[attacker->count > 1 ? 377 : 376]) %
+			(attacker->count > 1 ? attacker->getCreature()->namePl : attacker->getCreature()->nameSing) % dmg;
 	}
 	if(killed > 0)
 	{
 		if(killed > 1)
 		{
-			sprintf(tabh + end, CGI->generaltexth->allTexts[379].c_str(), killed,
-				multiple ? CGI->generaltexth->allTexts[43].c_str() : defender->getCreature()->namePl.c_str()); // creatures perish
+			txt = boost::format (CGI->generaltexth->allTexts[379]) % killed % (multiple ? CGI->generaltexth->allTexts[43] : defender->getCreature()->namePl); // creatures perish
 		}
 		else //killed == 1
 		{
-			sprintf(tabh + end, CGI->generaltexth->allTexts[378].c_str(),
-				multiple ? CGI->generaltexth->allTexts[42].c_str() : defender->getCreature()->nameSing.c_str()); // creature perishes
+			txt = boost::format (CGI->generaltexth->allTexts[378]) % (multiple ? CGI->generaltexth->allTexts[42] : defender->getCreature()->nameSing); // creature perishes
 		}
 	}
 
-	console->addText(std::string(tabh));
+	console->addText(boost::to_string (txt));
 }
 
 
@@ -2432,7 +2431,7 @@ void CBattleInterface::handleHex(BattleHex myNumber, int eventType)
 			{
 				cursorFrame = ECursor::COMBAT_QUERY;
 				consoleMsg = (boost::format(CGI->generaltexth->allTexts[297]) % shere->getName()).str();
-				realizeAction = [=]{ GH.pushInt(createCreWindow(shere, true)); };
+				realizeAction = [=]{ GH.pushInt(new CStackWindow(shere, false)); };
 				break;
 			}
 		}

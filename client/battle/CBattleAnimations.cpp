@@ -19,6 +19,7 @@
 #include "../../CCallback.h"
 #include "../../lib/BattleState.h"
 #include "../../lib/CTownHandler.h"
+#include "../../lib/mapObjects/CGTownInstance.h"
 
 /*
  * CBattleAnimations.cpp, part of VCMI engine
@@ -149,7 +150,9 @@ CDefenceAnimation::CDefenceAnimation(StackAttackedInfo _attackedInfo, CBattleInt
 : CBattleStackAnimation(_owner, _attackedInfo.defender),
 attacker(_attackedInfo.attacker), rangedAttack(_attackedInfo.indirectAttack),
 killed(_attackedInfo.killed) 
-{}
+{
+	logAnim->debugStream() << "Created defence anim for " << _attackedInfo.defender->getName();
+}
 
 bool CDefenceAnimation::init()
 {
@@ -363,7 +366,9 @@ bool CMeleeAttackAnimation::init()
 
 CMeleeAttackAnimation::CMeleeAttackAnimation(CBattleInterface * _owner, const CStack * attacker, BattleHex _dest, const CStack * _attacked)
 : CAttackAnimation(_owner, attacker, _dest, _attacked) 
-{}
+{
+	logAnim->debugStream() << "Created melee attack anim for " << attacker->getName();
+}
 
 void CMeleeAttackAnimation::endAnim()
 {
@@ -520,11 +525,14 @@ CMovementAnimation::CMovementAnimation(CBattleInterface *_owner, const CStack *_
       progress(0.0),
       nextHex(destTiles.front())
 {
+	logAnim->debugStream() << "Created movement anim for " << stack->getName();
 }
 
 CMovementEndAnimation::CMovementEndAnimation(CBattleInterface * _owner, const CStack * _stack, BattleHex destTile)
 : CBattleStackAnimation(_owner, _stack), destinationTile(destTile) 
-{}
+{
+	logAnim->debugStream() << "Created movement end anim for " << stack->getName();
+}
 
 bool CMovementEndAnimation::init()
 {
@@ -561,7 +569,9 @@ void CMovementEndAnimation::endAnim()
 
 CMovementStartAnimation::CMovementStartAnimation(CBattleInterface * _owner, const CStack * _stack)
 : CBattleStackAnimation(_owner, _stack) 
-{}
+{
+	logAnim->debugStream() << "Created movement start anim for " << stack->getName();
+}
 
 bool CMovementStartAnimation::init()
 {
@@ -591,7 +601,9 @@ void CMovementStartAnimation::endAnim()
 
 CReverseAnimation::CReverseAnimation(CBattleInterface * _owner, const CStack * stack, BattleHex dest, bool _priority)
 : CBattleStackAnimation(_owner, stack), hex(dest), priority(_priority)
-{}
+{
+	logAnim->debugStream() << "Created reverse anim for " << stack->getName();
+}
 
 bool CReverseAnimation::init()
 {
@@ -653,7 +665,9 @@ void CReverseAnimation::setupSecondPart()
 
 CShootingAnimation::CShootingAnimation(CBattleInterface * _owner, const CStack * attacker, BattleHex _dest, const CStack * _attacked, bool _catapult, int _catapultDmg)
 : CAttackAnimation(_owner, attacker, _dest, _attacked), catapultDamage(_catapultDmg)
-{}
+{
+	logAnim->debugStream() << "Created shooting anim for " << stack->getName();
+}
 
 bool CShootingAnimation::init()
 {
@@ -853,11 +867,15 @@ void CShootingAnimation::endAnim()
 
 CSpellEffectAnimation::CSpellEffectAnimation(CBattleInterface * _owner, ui32 _effect, BattleHex _destTile, int _dx, int _dy, bool _Vflip, bool _areaEffect)
 :CBattleAnimation(_owner), effect(_effect), destTile(_destTile), customAnim(""), x(0), y(0), dx(_dx), dy(_dy), Vflip(_Vflip) , areaEffect(_areaEffect)
-{}
+{
+	logAnim->debugStream() << "Created spell anim for effect #" << effect;
+}
 
 CSpellEffectAnimation::CSpellEffectAnimation(CBattleInterface * _owner, std::string _customAnim, int _x, int _y, int _dx, int _dy, bool _Vflip, bool _areaEffect)
 :CBattleAnimation(_owner), effect(-1), destTile(0), customAnim(_customAnim), x(_x), y(_y), dx(_dx), dy(_dy), Vflip(_Vflip), areaEffect(_areaEffect)
-{}
+{
+	logAnim->debugStream() << "Created spell anim for " << customAnim;
+}
 
 bool CSpellEffectAnimation::init()
 {

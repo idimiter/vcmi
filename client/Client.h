@@ -2,8 +2,9 @@
 
 
 #include "../lib/IGameCallback.h"
-#include "../lib/CondSh.h"
+#include "../lib/BattleAction.h"
 #include "../lib/CStopWatch.h"
+#include "../lib/int3.h"
 
 /*
  * Client.h, part of VCMI engine
@@ -15,6 +16,9 @@
  *
  */
 
+class CPack;
+class CCampaignState;
+class CBattleCallback;
 class IGameEventsReceiver;
 class IBattleEventsReceiver;
 class CBattleGameInterface;
@@ -109,6 +113,7 @@ public:
 /// Class which handles client - server logic
 class CClient : public IGameCallback
 {
+	unique_ptr<CPathsInfo> pathInfo;
 public:
 	std::map<PlayerColor,shared_ptr<CCallback> > callbacks; //callbacks given to player interfaces
 	std::map<PlayerColor,shared_ptr<CBattleCallback> > battleCallbacks; //callbacks given to player interfaces
@@ -124,9 +129,6 @@ public:
 	CConnection *serv;
 
 	boost::optional<BattleAction> curbaction;
-
-	unique_ptr<CPathsInfo> pathInfo;
-	boost::mutex pathMx; //protects the variable above
 
 	CScriptingModule *erm;
 
@@ -149,14 +151,14 @@ public:
 	void endGame(bool closeConnection = true);
 	void stopConnection();
 	void save(const std::string & fname);
-	void loadGame(const std::string & fname);
+	void loadGame(const std::string & fname, const bool server = true, const std::vector<int>& humanplayerindices = std::vector<int>(), const int loadnumplayers = 1, int player_ = -1, const std::string & ipaddr = "", const std::string & port = "");
 	void run();
 	void campaignMapFinished( shared_ptr<CCampaignState> camp );
 	void finishCampaign( shared_ptr<CCampaignState> camp );
 	void proposeNextMission(shared_ptr<CCampaignState> camp);
-	void invalidatePaths(const CGHeroInstance *h = nullptr); //invalidates paths for hero h or for any hero if h is nullptr => they'll got recalculated when the next query comes
-	void calculatePaths(const CGHeroInstance *h);
-	void updatePaths(); //calls calculatePaths for same hero for which we previously calculated paths
+
+	void invalidatePaths();
+	const CPathsInfo * getPathsInfo(const CGHeroInstance *h);
 
 	bool terminate;	// tell to terminate
 	boost::thread *connectionHandler; //thread running run() method
@@ -235,5 +237,6 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 	template <typename Handler> void serialize(Handler &h, const int version);
+	template <typename Handler> void serialize(Handler &h, const int version, const std::set<PlayerColor>& playerIDs);
 	void battleFinished();
 };

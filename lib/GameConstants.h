@@ -14,7 +14,7 @@
 
 namespace GameConstants
 {
-	const std::string VCMI_VERSION = "VCMI 0.96";
+	const std::string VCMI_VERSION = "VCMI 0.97b";
 
 	const int BFIELD_WIDTH = 17;
 	const int BFIELD_HEIGHT = 11;
@@ -299,7 +299,7 @@ namespace ETownType
 	enum ETownType
 	{
 		ANY = -1,
-		CASTLE, RAMPART, TOWER, INFERNO, NECROPOLIS, DUNGEON, STRONGHOLD, FORTRESS, CONFLUX
+		CASTLE, RAMPART, TOWER, INFERNO, NECROPOLIS, DUNGEON, STRONGHOLD, FORTRESS, CONFLUX, NEUTRAL
 	};
 }
 
@@ -333,8 +333,8 @@ public:
 		BROTHERHOOD = SPECIAL_3,
 
 		MYSTIC_POND         = SPECIAL_1,
-		FOUNTAIN_OF_FORTUNE = SPECIAL_3, //Rampart
-		TREASURY            = SPECIAL_4,
+		FOUNTAIN_OF_FORTUNE = SPECIAL_2, //Rampart
+		TREASURY            = SPECIAL_3,
 
 		ARTIFACT_MERCHANT = SPECIAL_1,
 		LOOKOUT_TOWER     = SPECIAL_2, //Tower

@@ -16,10 +16,6 @@
 // Fixed width bool data type is important for serialization
 static_assert(sizeof(bool) == 1, "Bool needs to be 1 byte in size.");
 
-#if defined _M_X64 && defined _WIN32 //Win64 -> cannot load 32-bit DLLs for video handling
-#  define DISABLE_VIDEO
-#endif
-
 #ifdef __GNUC__
 #  define GCC_VERSION (__GNUC__ * 100 + __GNUC_MINOR__ * 10 + __GNUC_PATCHLEVEL__)
 #endif
@@ -33,16 +29,6 @@ static_assert(sizeof(bool) == 1, "Bool needs to be 1 byte in size.");
 #endif
 
 /* ---------------------------------------------------------------------------- */
-/* Guarantee compiler features */
-/* ---------------------------------------------------------------------------- */
-//defining available c++11 features
-
-//initialization lists - gcc or clang
-#if defined(__clang__) || defined(__GNUC__)
-#  define CPP11_USE_INITIALIZERS_LIST
-#endif
-
-/* ---------------------------------------------------------------------------- */
 /* Suppress some compiler warnings */
 /* ---------------------------------------------------------------------------- */
 #ifdef _MSC_VER
@@ -50,9 +36,65 @@ static_assert(sizeof(bool) == 1, "Bool needs to be 1 byte in size.");
 #endif
 
 /* ---------------------------------------------------------------------------- */
+/* System detection. */
+/* ---------------------------------------------------------------------------- */
+// Based on: http://sourceforge.net/p/predef/wiki/OperatingSystems/
+//	 and on: http://stackoverflow.com/questions/5919996/how-to-detect-reliably-mac-os-x-ios-linux-windows-in-c-preprocessor
+// TODO?: Should be moved to vstd\os_detect.h (and then included by Global.h)
+#ifdef _WIN16			// Defined for 16-bit environments
+#  error "16-bit Windows isn't supported"
+#elif defined(_WIN64)	// Defined for 64-bit environments
+#  define VCMI_WINDOWS
+#  define VCMI_WINDOWS_64
+#elif defined(_WIN32)	// Defined for both 32-bit and 64-bit environments
+#  define VCMI_WINDOWS
+#  define VCMI_WINDOWS_32
+#elif defined(_WIN32_WCE)
+#  error "Windows CE isn't supported"
+#elif defined(__linux__) || defined(__gnu_linux__) || defined(linux) || defined(__linux)
+#  define VCMI_UNIX
+#  define VCMI_XDG
+#  ifdef __ANDROID__
+#    define VCMI_ANDROID 
+#  endif
+#elif defined(__FreeBSD_kernel__) || defined(__FreeBSD__)
+#  define VCMI_UNIX
+#  define VCMI_XDG
+#  define VCMI_FREEBSD
+#elif defined(__GNU__) || defined(__gnu_hurd__) || (defined(__MACH__) && !defined(__APPLE))
+#  define VCMI_UNIX
+#  define VCMI_XDG
+#  define VCMI_HURD
+#elif defined(__APPLE__) && defined(__MACH__)
+#  define VCMI_UNIX
+#  define VCMI_APPLE
+#  include "TargetConditionals.h"
+#  if TARGET_IPHONE_SIMULATOR
+#    define VCMI_IOS
+#    define VCMI_IOS_SIM
+#  elif TARGET_OS_IPHONE
+#    define VCMI_IOS
+#  elif TARGET_OS_MAC
+#    define VCMI_MAC
+#  else
+//#  warning "Unknown Apple target."?
+#  endif
+#else
+#  error "VCMI supports only Windows, OSX, Linux and Android targets"
+#endif
+
+#ifdef VCMI_IOS
+#  error "iOS system isn't yet supported."
+#endif
+
+/* ---------------------------------------------------------------------------- */
 /* Commonly used C++, Boost headers */
 /* ---------------------------------------------------------------------------- */
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#ifdef VCMI_WINDOWS
+#  define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers - delete this line if something is missing.
+#  define NOMINMAX					// Exclude min/max macros from <Windows.h>. Use std::[min/max] from <algorithm> instead.
+#endif
+
 #define _USE_MATH_DEFINES
 
 #include <cstdio>
@@ -86,22 +128,26 @@ static_assert(sizeof(bool) == 1, "Bool needs to be 1 byte in size.");
 
 #define BOOST_FILESYSTEM_VERSION 3
 #if BOOST_VERSION > 105000
-#define BOOST_THREAD_VERSION 3
+#  define BOOST_THREAD_VERSION 3
 #endif
 #define BOOST_THREAD_DONT_PROVIDE_THREAD_DESTRUCTOR_CALLS_TERMINATE_IF_JOINABLE 1
 #define BOOST_BIND_NO_PLACEHOLDERS
 
 #include <boost/algorithm/string.hpp>
-#include <boost/assign.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/current_function.hpp>
 #include <boost/crc.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_io.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/fstream.hpp>
 #include <boost/format.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/lexical_cast.hpp>
+#ifndef VCMI_ANDROID
+#include <boost/locale/generator.hpp>
+#endif
 #include <boost/logic/tribool.hpp>
 #include <boost/optional.hpp>
 #ifndef __IOS__ // I didn't compile program options because it have some duplicated with filesystem here.. should get it working and remove a lot of ifdef's
@@ -114,13 +160,8 @@ static_assert(sizeof(bool) == 1, "Bool needs to be 1 byte in size.");
 #include <boost/variant.hpp>
 #include <boost/math/special_functions/round.hpp>
 
-
-#ifdef ANDROID
-#include <android/log.h>
-#endif
-
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+#  define M_PI 3.14159265358979323846
 #endif
 
 /* ---------------------------------------------------------------------------- */
@@ -153,30 +194,20 @@ typedef boost::lock_guard<boost::recursive_mutex> TLockGuardRec;
 /* Macros */
 /* ---------------------------------------------------------------------------- */
 // Import + Export macro declarations
-#ifdef _WIN32
+#ifdef VCMI_WINDOWS
 #  ifdef __GNUC__
+#    define DLL_IMPORT __attribute__((dllimport))
 #    define DLL_EXPORT __attribute__((dllexport))
 #  else
+#    define DLL_IMPORT __declspec(dllimport)
 #    define DLL_EXPORT __declspec(dllexport)
 #  endif
 #  define ELF_VISIBILITY
 #else
 #  ifdef __GNUC__
+#    define DLL_IMPORT	__attribute__ ((visibility("default")))
 #    define DLL_EXPORT __attribute__ ((visibility("default")))
 #    define ELF_VISIBILITY __attribute__ ((visibility("default")))
-#  endif
-#endif
-
-#ifdef _WIN32
-#  ifdef __GNUC__
-#    define DLL_IMPORT __attribute__((dllimport))
-#  else
-#    define DLL_IMPORT __declspec(dllimport)
-#  endif
-#  define ELF_VISIBILITY
-#else
-#  ifdef __GNUC__
-#    define DLL_IMPORT	__attribute__ ((visibility("default")))
 #    define ELF_VISIBILITY __attribute__ ((visibility("default")))
 #  endif
 #endif
@@ -655,6 +686,13 @@ namespace vstd
 	{
 		boost::sort(vec);
 		vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
+	}
+	
+	template <typename T>
+	void concatenate(std::vector<T> &dest, const std::vector<T> &src)
+	{
+		dest.reserve(dest.size() + src.size());
+		dest.insert(dest.end(), src.begin(), src.end());	
 	}
 
 	using boost::math::round;

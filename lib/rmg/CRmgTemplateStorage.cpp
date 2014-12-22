@@ -18,6 +18,7 @@
 #include "../JsonNode.h"
 #include "../mapping/CMap.h"
 #include "../VCMI_Lib.h"
+#include "../CModHandler.h"
 #include "../CTownHandler.h"
 #include "../GameConstants.h"
 #include "../StringConstants.h"
@@ -46,7 +47,7 @@ void CJsonRmgTemplateLoader::loadTemplates()
 
 			// Parse zones
 			std::map<TRmgTemplateZoneId, CRmgTemplateZone *> zones;
-			for(const auto & zonePair : templateNode["zones"].Struct())
+			for (const auto & zonePair : templateNode["zones"].Struct())
 			{
 				auto zone = new CRmgTemplateZone();
 				auto zoneId = boost::lexical_cast<TRmgTemplateZoneId>(zonePair.first);
@@ -55,15 +56,55 @@ void CJsonRmgTemplateLoader::loadTemplates()
 				const auto & zoneNode = zonePair.second;
 				zone->setType(parseZoneType(zoneNode["type"].String()));
 				zone->setSize(zoneNode["size"].Float());
-				if(!zoneNode["owner"].isNull()) zone->setOwner(zoneNode["owner"].Float());
+				if (!zoneNode["owner"].isNull()) zone->setOwner(zoneNode["owner"].Float());
 
 				zone->setPlayerTowns(parseTemplateZoneTowns(zoneNode["playerTowns"]));
 				zone->setNeutralTowns(parseTemplateZoneTowns(zoneNode["neutralTowns"]));
-				zone->setTownTypes(parseTownTypes(zoneNode["townTypes"].Vector(), zone->getDefaultTownTypes()));
 				if (!zoneNode["matchTerrainToTown"].isNull()) //default : true
 					zone->setMatchTerrainToTown(zoneNode["matchTerrainToTown"].Bool());
 				zone->setTerrainTypes(parseTerrainTypes(zoneNode["terrainTypes"].Vector(), zone->getDefaultTerrainTypes()));
-				zone->setTownsAreSameType((zoneNode["townsAreSameType"].Bool()));
+
+				if (!zoneNode["townsAreSameType"].isNull()) //default : false
+					zone->setTownsAreSameType((zoneNode["townsAreSameType"].Bool()));
+
+				for (int i = 0; i < 2; ++i)
+				{
+					std::set<TFaction> allowedTownTypes;
+					if (i)
+					{
+						if (zoneNode["allowedTowns"].isNull())
+							allowedTownTypes = zone->getDefaultTownTypes();
+					}
+					else
+					{
+						if (zoneNode["allowedMonsters"].isNull())
+							allowedTownTypes = VLC->townh->getAllowedFactions(false);
+					}
+
+					if (allowedTownTypes.empty())
+					{
+						for (const JsonNode & allowedTown : zoneNode[i ? "allowedTowns" : "allowedMonsters"].Vector())
+						{
+							//complain if the town type is not present in our game
+							if (auto id = VLC->modh->identifiers.getIdentifier("faction", allowedTown, false))
+								allowedTownTypes.insert(id.get());
+						}
+					}
+
+					if (!zoneNode[i ? "bannedTowns" : "bannedMonsters"].isNull())
+					{
+						for (const JsonNode & bannedTown : zoneNode[i ? "bannedTowns" : "bannedMonsters"].Vector())
+						{
+							//erase unindentified towns silently
+							if (auto id = VLC->modh->identifiers.getIdentifier("faction", bannedTown, true))
+								vstd::erase_if_present(allowedTownTypes, id.get());
+						}
+					}
+					if (i)
+						zone->setTownTypes(allowedTownTypes);
+					else
+						zone->setMonsterTypes(allowedTownTypes);
+				}
 
 				const std::string monsterStrength = zoneNode["monsters"].String();
 				if (monsterStrength == "weak")
@@ -92,7 +133,6 @@ void CJsonRmgTemplateLoader::loadTemplates()
 				//treasures
 				if (!zoneNode["treasure"].isNull())
 				{
-					int totalDensity = 0;
 					//TODO: parse vector of different treasure settings
 					if (zoneNode["treasure"].getType() == JsonNode::DATA_STRUCT)
 					{
@@ -102,8 +142,6 @@ void CJsonRmgTemplateLoader::loadTemplates()
 							ti.min = treasureInfo["min"].Float();
 							ti.max = treasureInfo["max"].Float();
 							ti.density = treasureInfo["density"].Float(); //TODO: use me
-							totalDensity += ti.density;
-							ti.threshold = totalDensity;
 							zone->addTreasureInfo(ti);
 						}
 					}
@@ -115,12 +153,9 @@ void CJsonRmgTemplateLoader::loadTemplates()
 							ti.min = treasureInfo["min"].Float();
 							ti.max = treasureInfo["max"].Float();
 							ti.density = treasureInfo["density"].Float();
-							totalDensity += ti.density;
-							ti.threshold = totalDensity;
 							zone->addTreasureInfo(ti);
 						}
 					}
-					zone->setTotalDensity (totalDensity);
 				}
 
 				zones[zone->getId()] = zone;
@@ -135,7 +170,11 @@ void CJsonRmgTemplateLoader::loadTemplates()
 				const auto & zoneNode = zonePair.second;
 
 				if (!zoneNode["terrainTypeLikeZone"].isNull())
-					zone->setTerrainTypes (zones[zoneNode["terrainTypeLikeZone"].Float()]->getTerrainTypes());
+				{
+					int id = zoneNode["terrainTypeLikeZone"].Float();
+					zone->setTerrainTypes(zones[id]->getTerrainTypes());
+					zone->setMatchTerrainToTown(zones[id]->getMatchTerrainToTown());
+				}
 
 				if (!zoneNode["townTypeLikeZone"].isNull())
 					zone->setTownTypes (zones[zoneNode["townTypeLikeZone"].Float()]->getTownTypes());
@@ -146,7 +185,6 @@ void CJsonRmgTemplateLoader::loadTemplates()
 					{
 						zone->addTreasureInfo(treasureInfo);
 					}
-					zone->setTotalDensity (zones[zoneNode["treasureLikeZone"].Float()]->getTotalDensity());
 				}
 
 				if (!zoneNode["minesLikeZone"].isNull())
@@ -199,8 +237,13 @@ CRmgTemplate::CSize CJsonRmgTemplateLoader::parseMapTemplateSize(const std::stri
 
 	std::vector<std::string> parts;
 	boost::split(parts, text, boost::is_any_of("+"));
-	static const std::map<std::string, int> mapSizeMapping = boost::assign::map_list_of("s", CMapHeader::MAP_SIZE_SMALL)
-			("m", CMapHeader::MAP_SIZE_MIDDLE)("l", CMapHeader::MAP_SIZE_LARGE)("xl", CMapHeader::MAP_SIZE_XLARGE);
+	static const std::map<std::string, int> mapSizeMapping = 
+	{ 
+		{"s", CMapHeader::MAP_SIZE_SMALL},
+		{"m", CMapHeader::MAP_SIZE_MIDDLE},
+		{"l", CMapHeader::MAP_SIZE_LARGE},
+		{"xl", CMapHeader::MAP_SIZE_XLARGE},
+	};
 	auto it = mapSizeMapping.find(parts[0]);
 	if(it == mapSizeMapping.end())
 	{
@@ -224,9 +267,13 @@ CRmgTemplate::CSize CJsonRmgTemplateLoader::parseMapTemplateSize(const std::stri
 
 ETemplateZoneType::ETemplateZoneType CJsonRmgTemplateLoader::parseZoneType(const std::string & type) const
 {
-	static const std::map<std::string, ETemplateZoneType::ETemplateZoneType> zoneTypeMapping = boost::assign::map_list_of
-			("playerStart", ETemplateZoneType::PLAYER_START)("cpuStart", ETemplateZoneType::CPU_START)
-			("treasure", ETemplateZoneType::TREASURE)("junction", ETemplateZoneType::JUNCTION);
+	static const std::map<std::string, ETemplateZoneType::ETemplateZoneType> zoneTypeMapping = 
+	{
+		{"playerStart", ETemplateZoneType::PLAYER_START},
+		{"cpuStart", ETemplateZoneType::CPU_START},
+		{"treasure", ETemplateZoneType::TREASURE},
+		{"junction", ETemplateZoneType::JUNCTION},		
+	};
 	auto it = zoneTypeMapping.find(type);
 	if(it == zoneTypeMapping.end()) throw std::runtime_error("Zone type unknown.");
 	return it->second;

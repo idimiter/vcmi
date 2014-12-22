@@ -39,6 +39,7 @@ void CSettingsView::loadSettings()
 
 	ui->spinBoxNetworkPort->setValue(settings["server"]["port"].Float());
 
+	ui->comboBoxAutoCheck->setCurrentIndex(settings["launcher"]["autoCheckRepositories"].Bool());
 	// all calls to plainText will trigger textChanged() signal overwriting config. Create backup before editing widget
 	JsonNode urls = settings["launcher"]["repositoryURL"];
 
@@ -46,9 +47,9 @@ void CSettingsView::loadSettings()
 	for (auto entry : urls.Vector())
 		ui->plainTextEditRepos->appendPlainText(QString::fromUtf8(entry.String().c_str()));
 
-	ui->lineEditUserDataDir->setText(QString::fromUtf8(VCMIDirs::get().userDataPath().c_str()));
-	ui->lineEditGameDir->setText(QString::fromUtf8(M_DATA_DIR));
-	ui->lineEditTempDir->setText(QString::fromUtf8(VCMIDirs::get().userCachePath().c_str()));
+	ui->lineEditUserDataDir->setText(pathToQString(VCMIDirs::get().userDataPath()));
+	ui->lineEditGameDir->setText(pathToQString(VCMIDirs::get().binaryPath()));
+	ui->lineEditTempDir->setText(pathToQString(VCMIDirs::get().userCachePath()));
 
 	std::string encoding = settings["general"]["encoding"].String();
 	size_t encodingIndex = boost::range::find(knownEncodingsList, encoding) - knownEncodingsList;
@@ -82,6 +83,12 @@ void CSettingsView::on_comboBoxResolution_currentIndexChanged(const QString &arg
 void CSettingsView::on_comboBoxFullScreen_currentIndexChanged(int index)
 {
 	Settings node = settings.write["video"]["fullscreen"];
+	node->Bool() = index;
+}
+
+void CSettingsView::on_comboBoxAutoCheck_currentIndexChanged(int index)
+{
+	Settings node = settings.write["launcher"]["autoCheckRepositories"];
 	node->Bool() = index;
 }
 

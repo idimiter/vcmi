@@ -74,13 +74,16 @@ void CMapGenerator::initPrisonsRemaining()
 		if (isAllowed)
 			prisonsRemaining++;
 	}
-	prisonsRemaining = std::max<int> (0, prisonsRemaining - 16 * map->players.size()); //so at least 16 heroes will be available for every player
+	prisonsRemaining = std::max<int> (0, prisonsRemaining - 16 * mapGenOptions->getPlayerCount()); //so at least 16 heroes will be available for every player
 }
 
 std::unique_ptr<CMap> CMapGenerator::generate(CMapGenOptions * mapGenOptions, int randomSeed /*= std::time(nullptr)*/)
 {
 	this->mapGenOptions = mapGenOptions;
 	this->randomSeed = randomSeed;
+
+	assert(mapGenOptions);
+
 	rand.setSeed(this->randomSeed);
 	mapGenOptions->finalize(rand);
 
@@ -90,6 +93,7 @@ std::unique_ptr<CMap> CMapGenerator::generate(CMapGenOptions * mapGenOptions, in
 	try
 	{
 		editManager->getUndoManager().setUndoRedoLimit(0);
+		//FIXME:  somehow mapGenOption is nullptr at this point :?
 		addHeaderInfo();
 		initTiles();
 
@@ -108,15 +112,20 @@ std::unique_ptr<CMap> CMapGenerator::generate(CMapGenOptions * mapGenOptions, in
 
 std::string CMapGenerator::getMapDescription() const
 {
+	assert(mapGenOptions);
+	assert(map);
+
 	const std::string waterContentStr[3] = { "none", "normal", "islands" };
 	const std::string monsterStrengthStr[3] = { "weak", "normal", "strong" };
+
+	int monsterStrengthIndex = mapGenOptions->getMonsterStrength() - EMonsterStrength::GLOBAL_WEAK; //does not start from 0
 
     std::stringstream ss;
     ss << boost::str(boost::format(std::string("Map created by the Random Map Generator.\nTemplate was %s, Random seed was %d, size %dx%d") +
         ", levels %s, humans %d, computers %d, water %s, monster %s, second expansion map") % mapGenOptions->getMapTemplate()->getName() %
 		randomSeed % map->width % map->height % (map->twoLevel ? "2" : "1") % static_cast<int>(mapGenOptions->getPlayerCount()) %
 		static_cast<int>(mapGenOptions->getCompOnlyPlayerCount()) % waterContentStr[mapGenOptions->getWaterContent()] %
-        monsterStrengthStr[mapGenOptions->getMonsterStrength()]);
+		monsterStrengthStr[monsterStrengthIndex]);
 
 	for(const auto & pair : mapGenOptions->getPlayersSettings())
 	{
@@ -202,13 +211,8 @@ void CMapGenerator::genZones()
 	auto w = mapGenOptions->getWidth();
 	auto h = mapGenOptions->getHeight();
 
-
 	auto tmpl = mapGenOptions->getMapTemplate();
 	zones = tmpl->getZones(); //copy from template (refactor?)
-
-	int player_per_side = zones.size() > 4 ? 3 : 2;
-		
-	logGlobal->infoStream() << boost::format("Map size %d %d, players per side %d") % w % h % player_per_side;
 
 	CZonePlacer placer(this);
 	placer.placeZones(mapGenOptions, &rand);
@@ -216,13 +220,6 @@ void CMapGenerator::genZones()
 
 	int i = 0;
 
-	for(auto const it : zones)
-	{
-		CRmgTemplateZone * zone = it.second;
-		zone->setType(i < pcnt ? ETemplateZoneType::PLAYER_START : ETemplateZoneType::TREASURE);
-		this->zones[it.first] = zone;
-		++i;
-	}
 	logGlobal->infoStream() << "Zones generated successfully";
 }
 
@@ -248,10 +245,24 @@ void CMapGenerator::fillZones()
 		 //we need info about all town types to evaluate dwellings and pandoras with creatures properly
 		it.second->initTownType(this);
 	}
+	std::vector<CRmgTemplateZone*> treasureZones;
 	for (auto it : zones)
 	{
 		it.second->fill(this);
-	}	
+		if (it.second->getType() == ETemplateZoneType::TREASURE)
+			treasureZones.push_back(it.second);
+	}
+
+	//find place for Grail
+	if (treasureZones.empty())
+	{
+		for (auto it : zones)
+			treasureZones.push_back(it.second);
+	}
+	auto grailZone = *RandomGeneratorUtil::nextItem(treasureZones, rand);
+
+	map->grailPos = *RandomGeneratorUtil::nextItem(*grailZone->getFreePaths(), rand);
+
 	logGlobal->infoStream() << "Zones filled successfully";
 }
 
@@ -461,7 +472,13 @@ float CMapGenerator::getNearestObjectDistance(const int3 &tile) const
 int CMapGenerator::getNextMonlithIndex()
 {
 	if (monolithIndex >= VLC->objtypeh->knownSubObjects(Obj::MONOLITH_TWO_WAY).size())
+	{
+		//logGlobal->errorStream() << boost::to_string(boost::format("RMG Error! There is no Monolith Two Way with index %d available!") % monolithIndex);
+		//monolithIndex++;
+		//return VLC->objtypeh->knownSubObjects(Obj::MONOLITH_TWO_WAY).size() - 1;
+		//TODO: interrupt map generation and report error
 		throw rmgException(boost::to_string(boost::format("There is no Monolith Two Way with index %d available!") % monolithIndex));
+	}
 	else
 		return monolithIndex++;
 }

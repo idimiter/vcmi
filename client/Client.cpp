@@ -1,4 +1,7 @@
 #include "StdInc.h"
+#include "Client.h"
+
+#include <SDL.h>
 
 #include "CMusicHandler.h"
 #include "../lib/mapping/CCampaignHandler.h"
@@ -17,7 +20,7 @@
 #include "../lib/CBuildingHandler.h"
 #include "../lib/CSpellHandler.h"
 #include "../lib/Connection.h"
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 #include "../lib/Interprocess.h"
 #endif
 #include "../lib/NetPacks.h"
@@ -37,7 +40,7 @@
 #include "CMT.h"
 
 extern std::string NAME;
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 namespace intpr = boost::interprocess;
 #endif
 
@@ -238,14 +241,21 @@ void CClient::endGame( bool closeConnection /*= true*/ )
     logNetwork->infoStream() << "Client stopped.";
 }
 
-void CClient::loadGame( const std::string & fname )
+#if 1
+void CClient::loadGame(const std::string & fname, const bool server, const std::vector<int>& humanplayerindices, const int loadNumPlayers, int player_, const std::string & ipaddr, const std::string & port)
 {
+    PlayerColor player(player_); //intentional shadowing
+
     logNetwork->infoStream() <<"Loading procedure started!";
 
 	CServerHandler sh;
-	sh.startServer();
+    if(server)
+         sh.startServer();
+    else
+         serv = sh.justConnectToServer(ipaddr,port=="" ? "3030" : port);
 
 	CStopWatch tmh;
+    unique_ptr<CLoadFile> loader;
 	try
 	{
 		std::string clientSaveName = *CResourceHandler::get("local")->getResourceName(ResourceID(fname, EResType::CLIENT_SAVEGAME));
@@ -266,7 +276,6 @@ void CClient::loadGame( const std::string & fname )
 		if(controlServerSaveName.empty())
 			throw std::runtime_error("Cannot open server part of " + fname);
 
-		unique_ptr<CLoadFile> loader;
 		{
 			CLoadIntegrityValidator checkingLoader(clientSaveName, controlServerSaveName, minSupportedVersion);
 			loadCommonState(checkingLoader);
@@ -278,9 +287,6 @@ void CClient::loadGame( const std::string & fname )
 		pathInfo = make_unique<CPathsInfo>(getMapSize());
 		CGI->mh->init();
         logNetwork->infoStream() <<"Initing maphandler: "<<tmh.getDiff();
-
-		*loader >> *this;
-        logNetwork->infoStream() << "Loaded client part of save " << tmh.getDiff();
 	}
 	catch(std::exception &e)
 	{
@@ -288,27 +294,60 @@ void CClient::loadGame( const std::string & fname )
 		throw; //obviously we cannot continue here
 	}
 
-	serv = sh.connectToServer();
-	serv->addStdVecItems(gs);
+/*
+    if(!server)
+         player = PlayerColor(player_);
+*/
 
-	tmh.update();
-	ui8 pom8;
-	*serv << ui8(3) << ui8(1); //load game; one client
-	*serv << fname;
-	*serv >> pom8;
-	if(pom8) 
-		throw std::runtime_error("Server cannot open the savegame!");
-	else
-        logNetwork->infoStream() << "Server opened savegame properly.";
+    std::set<PlayerColor> clientPlayers;
+    if(server)
+         serv = sh.connectToServer();
+    //*loader >> *this;
 
-	*serv << ui32(gs->scenarioOps->playerInfos.size()+1); //number of players + neutral
-	for(auto & elem : gs->scenarioOps->playerInfos)
-	{
-		*serv << ui8(elem.first.getNum()); //players
-	}
-	*serv << ui8(PlayerColor::NEUTRAL.getNum());
+    if(server)
+    {
+         tmh.update();
+         ui8 pom8;
+         *serv << ui8(3) << ui8(loadNumPlayers); //load game; one client if single-player
+         *serv << fname;
+         *serv >> pom8;
+         if(pom8) 
+              throw std::runtime_error("Server cannot open the savegame!");
+         else
+              logNetwork->infoStream() << "Server opened savegame properly.";
+    }
+
+    if(server)
+    {
+         for(auto & elem : gs->scenarioOps->playerInfos)
+              if(!std::count(humanplayerindices.begin(),humanplayerindices.end(),elem.first.getNum()) || elem.first==player)
+              {
+                  clientPlayers.insert(elem.first);
+              }
+         clientPlayers.insert(PlayerColor::NEUTRAL);
+    }
+    else
+    {
+        clientPlayers.insert(player);
+    }
+
+    std::cout << "CLIENTPLAYERS:\n";
+    for(auto x : clientPlayers)
+         std::cout << x << std::endl;
+    std::cout << "ENDCLIENTPLAYERS\n";
+
+    serialize(*loader,0,clientPlayers);
+    *serv << ui32(clientPlayers.size());
+    for(auto & elem : clientPlayers)
+        *serv << ui8(elem.getNum());
+    serv->addStdVecItems(gs); /*why is this here?*/
+
+    //*loader >> *this;
+    logNetwork->infoStream() << "Loaded client part of save " << tmh.getDiff();
+
     logNetwork->infoStream() <<"Sent info to server: "<<tmh.getDiff();
 
+    //*serv << clientPlayers;
 	serv->enableStackSendingByID();
 	serv->disableSmartPointerSerialization();
 
@@ -322,6 +361,7 @@ void CClient::loadGame( const std::string & fname )
 // 			logGlobal->traceStream() << boost::format("\tindex=%5d --- nullptr") % i;
 // 	}
 }
+#endif
 
 void CClient::newGame( CConnection *con, StartInfo *si )
 {
@@ -524,8 +564,77 @@ void CClient::serialize( Handler &h, const int version )
 	}
 }
 
+template <typename Handler>
+void CClient::serialize( Handler &h, const int version, const std::set<PlayerColor>& playerIDs)
+{
+	h & hotSeat;
+	if(h.saving)
+	{
+		ui8 players = playerint.size();
+		h & players;
+
+		for(auto i = playerint.begin(); i != playerint.end(); i++)
+		{
+			LOG_TRACE_PARAMS(logGlobal, "Saving player %s interface", i->first);
+			assert(i->first == i->second->playerID);
+			h & i->first & i->second->dllName & i->second->human;
+			i->second->saveGame(dynamic_cast<COSer<CSaveFile>&>(h), version); 
+			//evil cast that i still like better than sfinae-magic. If I had a "static if"...
+		}
+	}
+	else
+	{
+		ui8 players = 0; //fix for uninitialized warning
+		h & players;
+
+		for(int i=0; i < players; i++)
+		{
+			std::string dllname;
+			PlayerColor pid; 
+			bool isHuman = false;
+
+			h & pid & dllname & isHuman;
+			LOG_TRACE_PARAMS(logGlobal, "Loading player %s interface", pid);
+
+			shared_ptr<CGameInterface> nInt;
+			if(dllname.length())
+			{
+				if(pid == PlayerColor::NEUTRAL)
+				{
+                    if(playerIDs.count(pid))
+                       installNewBattleInterface(CDynLibHandler::getNewBattleAI(dllname), pid);
+					//TODO? consider serialization 
+					continue;
+				}
+				else
+				{
+					assert(!isHuman);
+					nInt = CDynLibHandler::getNewAI(dllname);
+				}
+			}
+			else
+			{
+				assert(isHuman);
+				nInt = make_shared<CPlayerInterface>(pid);
+			}
+
+			nInt->dllName = dllname;
+			nInt->human = isHuman;
+			nInt->playerID = pid;
+
+            if(playerIDs.count(pid))
+                 installNewPlayerInterface(nInt, pid);
+
+            nInt->loadGame(dynamic_cast<CISer<CLoadFile>&>(h), version); //another evil cast, check above            
+		}
+
+		if(playerIDs.count(PlayerColor::NEUTRAL))
+            loadNeutralBattleAI();
+	}
+}
+
 void CClient::handlePack( CPack * pack )
-{			
+{
 	CBaseForCLApply *apply = applier->apps[typeList.getTypeID(pack)]; //find the applier
 	if(apply)
 	{
@@ -542,14 +651,6 @@ void CClient::handlePack( CPack * pack )
         logNetwork->errorStream() << "Message cannot be applied, cannot find applier! TypeID " << typeList.getTypeID(pack);
 	}
 	delete pack;
-}
-
-void CClient::updatePaths()
-{
-	//TODO? lazy evaluation? paths now can get recalculated multiple times upon various game events
-	const CGHeroInstance *h = getSelectedHero();
-	if (h)//if we have selected hero...
-		calculatePaths(h);
 }
 
 void CClient::finishCampaign( shared_ptr<CCampaignState> camp )
@@ -674,13 +775,6 @@ PlayerColor CClient::getLocalPlayer() const
 	return getCurrentPlayer();
 }
 
-void CClient::calculatePaths(const CGHeroInstance *h)
-{
-	assert(h);
-	boost::unique_lock<boost::mutex> pathLock(pathMx);
-	gs->calculatePaths(h, *pathInfo);
-}
-
 void CClient::commenceTacticPhaseForInt(shared_ptr<CBattleGameInterface> battleInt)
 {
 	setThreadName("CClient::commenceTacticPhaseForInt");
@@ -695,10 +789,22 @@ void CClient::commenceTacticPhaseForInt(shared_ptr<CBattleGameInterface> battleI
 	} HANDLE_EXCEPTION
 }
 
-void CClient::invalidatePaths(const CGHeroInstance *h /*= nullptr*/)
+void CClient::invalidatePaths()
 {
-	if(!h || pathInfo->hero == h)
-		pathInfo->isValid = false;
+	// turn pathfinding info into invalid. It will be regenerated later
+	boost::unique_lock<boost::mutex> pathLock(pathInfo->pathMx);
+	pathInfo->hero = nullptr;
+}
+
+const CPathsInfo * CClient::getPathsInfo(const CGHeroInstance *h)
+{
+	assert(h);
+	boost::unique_lock<boost::mutex> pathLock(pathInfo->pathMx);
+	if (pathInfo->hero != h)
+	{
+		gs->calculatePaths(h, *pathInfo.get());
+	}
+	return pathInfo.get();
 }
 
 int CClient::sendRequest(const CPack *request, PlayerColor player)
@@ -745,7 +851,7 @@ void CClient::installNewPlayerInterface(shared_ptr<CGameInterface> gameInterface
 	boost::unique_lock<boost::recursive_mutex> un(*LOCPLINT->pim);
 	PlayerColor colorUsed = color.get_value_or(PlayerColor::UNFLAGGABLE);
 
-	if(!color) 
+	if(!color)
 		privilagedGameEventReceivers.push_back(gameInterface);
 
 	playerint[colorUsed] = gameInterface;
@@ -782,8 +888,9 @@ std::string CClient::aiNameForPlayer(const PlayerSettings &ps, bool battleAI)
 {
 	if(ps.name.size())
 	{
-		std::string filename = VCMIDirs::get().libraryPath() + "/AI/" + VCMIDirs::get().libraryName(ps.name);
-		if(boost::filesystem::exists(filename))
+		const boost::filesystem::path aiPath =
+			VCMIDirs::get().libraryPath() / "AI" / VCMIDirs::get().libraryName(ps.name);
+		if (boost::filesystem::exists(aiPath))
 			return ps.name;
 	}
 
@@ -816,7 +923,7 @@ void CServerHandler::waitForServer()
 		startServer();
 
 	th.update();
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 	intpr::scoped_lock<intpr::interprocess_mutex> slock(shared->sr->mutex);
 	while(!shared->sr->ready)
 	{
@@ -829,7 +936,7 @@ void CServerHandler::waitForServer()
 
 CConnection * CServerHandler::connectToServer()
 {
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 	if(!shared->sr->ready)
 		waitForServer();
 #else
@@ -837,6 +944,7 @@ CConnection * CServerHandler::connectToServer()
 #endif
 
 	th.update(); //put breakpoint here to attach to server before it does something stupid
+    
 	CConnection *ret = justConnectToServer(settings["server"]["server"].String(), port);
 
 	if(verbose)
@@ -856,7 +964,7 @@ CServerHandler::CServerHandler(bool runServer /*= false*/)
 	verbose = true;
 #endif // __IOS__
 
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 	boost::interprocess::shared_memory_object::remove("vcmi_memory"); //if the application has previously crashed, the memory may not have been removed. to avoid problems - try to destroy it
 	try
 	{
@@ -874,8 +982,9 @@ CServerHandler::~CServerHandler()
 void CServerHandler::callServer()
 {
 	setThreadName("CServerHandler::callServer");
-	std::string logName = VCMIDirs::get().userCachePath() + "/server_log.txt";
-	std::string comm = VCMIDirs::get().serverPath() + " --port=" + port + " > " + logName;
+	const std::string logName = (VCMIDirs::get().userCachePath() / "server_log.txt").string();
+	const std::string comm = VCMIDirs::get().serverPath().string() + " --port=" + port + " > \"" + logName + '\"';
+
 #ifdef __IOS__
 	int result = 0;
 

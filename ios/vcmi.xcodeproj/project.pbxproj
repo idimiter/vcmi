@@ -171,43 +171,6 @@
 		B5E8B9101988EA5600DC2C1B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8941988EA5600DC2C1B /* main.cpp */; };
 		B5E8B9131988EA5600DC2C1B /* CEmptyAI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8991988EA5600DC2C1B /* CEmptyAI.cpp */; };
 		B5E8B9171988EA5600DC2C1B /* exp_funcs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B89E1988EA5600DC2C1B /* exp_funcs.cpp */; };
-		B5E8B9191988EA5600DC2C1B /* AreaCentroidAlgorithm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8A21988EA5600DC2C1B /* AreaCentroidAlgorithm.cpp */; };
-		B5E8B91B1988EA5600DC2C1B /* CompoundTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8A51988EA5600DC2C1B /* CompoundTerm.cpp */; };
-		B5E8B91C1988EA5600DC2C1B /* DescriptiveAntecedent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8A81988EA5600DC2C1B /* DescriptiveAntecedent.cpp */; };
-		B5E8B91D1988EA5600DC2C1B /* DiscreteTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8AA1988EA5600DC2C1B /* DiscreteTerm.cpp */; };
-		B5E8B91E1988EA5600DC2C1B /* FunctionTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8AD1988EA5600DC2C1B /* FunctionTerm.cpp */; };
-		B5E8B91F1988EA5600DC2C1B /* FuzzyAnd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8AF1988EA5600DC2C1B /* FuzzyAnd.cpp */; };
-		B5E8B9201988EA5600DC2C1B /* FuzzyAntecedent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8B11988EA5600DC2C1B /* FuzzyAntecedent.cpp */; };
-		B5E8B9211988EA5600DC2C1B /* FuzzyConsequent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8B31988EA5600DC2C1B /* FuzzyConsequent.cpp */; };
-		B5E8B9221988EA5600DC2C1B /* FuzzyDefuzzifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8B51988EA5600DC2C1B /* FuzzyDefuzzifier.cpp */; };
-		B5E8B9231988EA5600DC2C1B /* FuzzyEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8B71988EA5600DC2C1B /* FuzzyEngine.cpp */; };
-		B5E8B9241988EA5600DC2C1B /* FuzzyException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8B91988EA5600DC2C1B /* FuzzyException.cpp */; };
-		B5E8B9251988EA5600DC2C1B /* FuzzyExceptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8BB1988EA5600DC2C1B /* FuzzyExceptions.cpp */; };
-		B5E8B9281988EA5600DC2C1B /* FuzzyModulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8C01988EA5600DC2C1B /* FuzzyModulation.cpp */; };
-		B5E8B9291988EA5600DC2C1B /* FuzzyOperation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8C21988EA5600DC2C1B /* FuzzyOperation.cpp */; };
-		B5E8B92A1988EA5600DC2C1B /* FuzzyOperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8C41988EA5600DC2C1B /* FuzzyOperator.cpp */; };
-		B5E8B92B1988EA5600DC2C1B /* FuzzyOr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8C61988EA5600DC2C1B /* FuzzyOr.cpp */; };
-		B5E8B92C1988EA5600DC2C1B /* FuzzyRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8C81988EA5600DC2C1B /* FuzzyRule.cpp */; };
-		B5E8B92D1988EA5600DC2C1B /* Hedge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8CA1988EA5600DC2C1B /* Hedge.cpp */; };
-		B5E8B92E1988EA5600DC2C1B /* HedgeSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8CC1988EA5600DC2C1B /* HedgeSet.cpp */; };
-		B5E8B92F1988EA5600DC2C1B /* InfixToPostfix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8CE1988EA5600DC2C1B /* InfixToPostfix.cpp */; };
-		B5E8B9301988EA5600DC2C1B /* InputLVar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8D01988EA5600DC2C1B /* InputLVar.cpp */; };
-		B5E8B9311988EA5600DC2C1B /* LinguisticTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8D21988EA5600DC2C1B /* LinguisticTerm.cpp */; };
-		B5E8B9321988EA5600DC2C1B /* LinguisticVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8D41988EA5600DC2C1B /* LinguisticVariable.cpp */; };
-		B5E8B9341988EA5600DC2C1B /* MamdaniConsequent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8D71988EA5600DC2C1B /* MamdaniConsequent.cpp */; };
-		B5E8B9351988EA5600DC2C1B /* MamdaniRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8D91988EA5600DC2C1B /* MamdaniRule.cpp */; };
-		B5E8B9361988EA5600DC2C1B /* OutputLVar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8DB1988EA5600DC2C1B /* OutputLVar.cpp */; };
-		B5E8B9371988EA5600DC2C1B /* RectangularTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8DD1988EA5600DC2C1B /* RectangularTerm.cpp */; };
-		B5E8B9381988EA5600DC2C1B /* RuleBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8DF1988EA5600DC2C1B /* RuleBlock.cpp */; };
-		B5E8B9391988EA5600DC2C1B /* ShoulderTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8E11988EA5600DC2C1B /* ShoulderTerm.cpp */; };
-		B5E8B93A1988EA5600DC2C1B /* SingletonTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8E31988EA5600DC2C1B /* SingletonTerm.cpp */; };
-		B5E8B93B1988EA5600DC2C1B /* StrOp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8E51988EA5600DC2C1B /* StrOp.cpp */; };
-		B5E8B93C1988EA5600DC2C1B /* TakagiSugenoConsequent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8E71988EA5600DC2C1B /* TakagiSugenoConsequent.cpp */; };
-		B5E8B93D1988EA5600DC2C1B /* TakagiSugenoRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8E91988EA5600DC2C1B /* TakagiSugenoRule.cpp */; };
-		B5E8B93E1988EA5600DC2C1B /* TakagiSugenoTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8EB1988EA5600DC2C1B /* TakagiSugenoTerm.cpp */; };
-		B5E8B93F1988EA5600DC2C1B /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8ED1988EA5600DC2C1B /* test.cpp */; };
-		B5E8B9401988EA5600DC2C1B /* TrapezoidalTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8EF1988EA5600DC2C1B /* TrapezoidalTerm.cpp */; };
-		B5E8B9411988EA5600DC2C1B /* TriangularTerm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8F11988EA5600DC2C1B /* TriangularTerm.cpp */; };
 		B5E8B9421988EA5600DC2C1B /* GeniusAI.brain in Resources */ = {isa = PBXBuildFile; fileRef = B5E8B8F31988EA5600DC2C1B /* GeniusAI.brain */; };
 		B5E8B9441988EA5600DC2C1B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8F61988EA5600DC2C1B /* main.cpp */; };
 		B5E8B9451988EA5600DC2C1B /* StdInc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5E8B8F71988EA5600DC2C1B /* StdInc.cpp */; };
@@ -549,83 +512,6 @@
 		B5E8B8991988EA5600DC2C1B /* CEmptyAI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CEmptyAI.cpp; sourceTree = "<group>"; };
 		B5E8B89A1988EA5600DC2C1B /* CEmptyAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CEmptyAI.h; sourceTree = "<group>"; };
 		B5E8B89E1988EA5600DC2C1B /* exp_funcs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exp_funcs.cpp; sourceTree = "<group>"; };
-		B5E8B8A21988EA5600DC2C1B /* AreaCentroidAlgorithm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AreaCentroidAlgorithm.cpp; sourceTree = "<group>"; };
-		B5E8B8A31988EA5600DC2C1B /* AreaCentroidAlgorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AreaCentroidAlgorithm.h; sourceTree = "<group>"; };
-		B5E8B8A51988EA5600DC2C1B /* CompoundTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompoundTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8A61988EA5600DC2C1B /* CompoundTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompoundTerm.h; sourceTree = "<group>"; };
-		B5E8B8A71988EA5600DC2C1B /* defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = defs.h; sourceTree = "<group>"; };
-		B5E8B8A81988EA5600DC2C1B /* DescriptiveAntecedent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DescriptiveAntecedent.cpp; sourceTree = "<group>"; };
-		B5E8B8A91988EA5600DC2C1B /* DescriptiveAntecedent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DescriptiveAntecedent.h; sourceTree = "<group>"; };
-		B5E8B8AA1988EA5600DC2C1B /* DiscreteTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DiscreteTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8AB1988EA5600DC2C1B /* DiscreteTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscreteTerm.h; sourceTree = "<group>"; };
-		B5E8B8AC1988EA5600DC2C1B /* flScalar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flScalar.h; sourceTree = "<group>"; };
-		B5E8B8AD1988EA5600DC2C1B /* FunctionTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FunctionTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8AE1988EA5600DC2C1B /* FunctionTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FunctionTerm.h; sourceTree = "<group>"; };
-		B5E8B8AF1988EA5600DC2C1B /* FuzzyAnd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyAnd.cpp; sourceTree = "<group>"; };
-		B5E8B8B01988EA5600DC2C1B /* FuzzyAnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyAnd.h; sourceTree = "<group>"; };
-		B5E8B8B11988EA5600DC2C1B /* FuzzyAntecedent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyAntecedent.cpp; sourceTree = "<group>"; };
-		B5E8B8B21988EA5600DC2C1B /* FuzzyAntecedent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyAntecedent.h; sourceTree = "<group>"; };
-		B5E8B8B31988EA5600DC2C1B /* FuzzyConsequent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyConsequent.cpp; sourceTree = "<group>"; };
-		B5E8B8B41988EA5600DC2C1B /* FuzzyConsequent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyConsequent.h; sourceTree = "<group>"; };
-		B5E8B8B51988EA5600DC2C1B /* FuzzyDefuzzifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyDefuzzifier.cpp; sourceTree = "<group>"; };
-		B5E8B8B61988EA5600DC2C1B /* FuzzyDefuzzifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyDefuzzifier.h; sourceTree = "<group>"; };
-		B5E8B8B71988EA5600DC2C1B /* FuzzyEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyEngine.cpp; sourceTree = "<group>"; };
-		B5E8B8B81988EA5600DC2C1B /* FuzzyEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyEngine.h; sourceTree = "<group>"; };
-		B5E8B8B91988EA5600DC2C1B /* FuzzyException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyException.cpp; sourceTree = "<group>"; };
-		B5E8B8BA1988EA5600DC2C1B /* FuzzyException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyException.h; sourceTree = "<group>"; };
-		B5E8B8BB1988EA5600DC2C1B /* FuzzyExceptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyExceptions.cpp; sourceTree = "<group>"; };
-		B5E8B8BC1988EA5600DC2C1B /* FuzzyExceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyExceptions.h; sourceTree = "<group>"; };
-		B5E8B8BE1988EA5600DC2C1B /* FuzzyLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyLite.h; sourceTree = "<group>"; };
-		B5E8B8C01988EA5600DC2C1B /* FuzzyModulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyModulation.cpp; sourceTree = "<group>"; };
-		B5E8B8C11988EA5600DC2C1B /* FuzzyModulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyModulation.h; sourceTree = "<group>"; };
-		B5E8B8C21988EA5600DC2C1B /* FuzzyOperation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyOperation.cpp; sourceTree = "<group>"; };
-		B5E8B8C31988EA5600DC2C1B /* FuzzyOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyOperation.h; sourceTree = "<group>"; };
-		B5E8B8C41988EA5600DC2C1B /* FuzzyOperator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyOperator.cpp; sourceTree = "<group>"; };
-		B5E8B8C51988EA5600DC2C1B /* FuzzyOperator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyOperator.h; sourceTree = "<group>"; };
-		B5E8B8C61988EA5600DC2C1B /* FuzzyOr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyOr.cpp; sourceTree = "<group>"; };
-		B5E8B8C71988EA5600DC2C1B /* FuzzyOr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyOr.h; sourceTree = "<group>"; };
-		B5E8B8C81988EA5600DC2C1B /* FuzzyRule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FuzzyRule.cpp; sourceTree = "<group>"; };
-		B5E8B8C91988EA5600DC2C1B /* FuzzyRule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuzzyRule.h; sourceTree = "<group>"; };
-		B5E8B8CA1988EA5600DC2C1B /* Hedge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Hedge.cpp; sourceTree = "<group>"; };
-		B5E8B8CB1988EA5600DC2C1B /* Hedge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Hedge.h; sourceTree = "<group>"; };
-		B5E8B8CC1988EA5600DC2C1B /* HedgeSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HedgeSet.cpp; sourceTree = "<group>"; };
-		B5E8B8CD1988EA5600DC2C1B /* HedgeSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HedgeSet.h; sourceTree = "<group>"; };
-		B5E8B8CE1988EA5600DC2C1B /* InfixToPostfix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfixToPostfix.cpp; sourceTree = "<group>"; };
-		B5E8B8CF1988EA5600DC2C1B /* InfixToPostfix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfixToPostfix.h; sourceTree = "<group>"; };
-		B5E8B8D01988EA5600DC2C1B /* InputLVar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputLVar.cpp; sourceTree = "<group>"; };
-		B5E8B8D11988EA5600DC2C1B /* InputLVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InputLVar.h; sourceTree = "<group>"; };
-		B5E8B8D21988EA5600DC2C1B /* LinguisticTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinguisticTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8D31988EA5600DC2C1B /* LinguisticTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinguisticTerm.h; sourceTree = "<group>"; };
-		B5E8B8D41988EA5600DC2C1B /* LinguisticVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinguisticVariable.cpp; sourceTree = "<group>"; };
-		B5E8B8D51988EA5600DC2C1B /* LinguisticVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinguisticVariable.h; sourceTree = "<group>"; };
-		B5E8B8D71988EA5600DC2C1B /* MamdaniConsequent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MamdaniConsequent.cpp; sourceTree = "<group>"; };
-		B5E8B8D81988EA5600DC2C1B /* MamdaniConsequent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MamdaniConsequent.h; sourceTree = "<group>"; };
-		B5E8B8D91988EA5600DC2C1B /* MamdaniRule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MamdaniRule.cpp; sourceTree = "<group>"; };
-		B5E8B8DA1988EA5600DC2C1B /* MamdaniRule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MamdaniRule.h; sourceTree = "<group>"; };
-		B5E8B8DB1988EA5600DC2C1B /* OutputLVar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OutputLVar.cpp; sourceTree = "<group>"; };
-		B5E8B8DC1988EA5600DC2C1B /* OutputLVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputLVar.h; sourceTree = "<group>"; };
-		B5E8B8DD1988EA5600DC2C1B /* RectangularTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RectangularTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8DE1988EA5600DC2C1B /* RectangularTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RectangularTerm.h; sourceTree = "<group>"; };
-		B5E8B8DF1988EA5600DC2C1B /* RuleBlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RuleBlock.cpp; sourceTree = "<group>"; };
-		B5E8B8E01988EA5600DC2C1B /* RuleBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RuleBlock.h; sourceTree = "<group>"; };
-		B5E8B8E11988EA5600DC2C1B /* ShoulderTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShoulderTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8E21988EA5600DC2C1B /* ShoulderTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShoulderTerm.h; sourceTree = "<group>"; };
-		B5E8B8E31988EA5600DC2C1B /* SingletonTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SingletonTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8E41988EA5600DC2C1B /* SingletonTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingletonTerm.h; sourceTree = "<group>"; };
-		B5E8B8E51988EA5600DC2C1B /* StrOp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StrOp.cpp; sourceTree = "<group>"; };
-		B5E8B8E61988EA5600DC2C1B /* StrOp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StrOp.h; sourceTree = "<group>"; };
-		B5E8B8E71988EA5600DC2C1B /* TakagiSugenoConsequent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TakagiSugenoConsequent.cpp; sourceTree = "<group>"; };
-		B5E8B8E81988EA5600DC2C1B /* TakagiSugenoConsequent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakagiSugenoConsequent.h; sourceTree = "<group>"; };
-		B5E8B8E91988EA5600DC2C1B /* TakagiSugenoRule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TakagiSugenoRule.cpp; sourceTree = "<group>"; };
-		B5E8B8EA1988EA5600DC2C1B /* TakagiSugenoRule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakagiSugenoRule.h; sourceTree = "<group>"; };
-		B5E8B8EB1988EA5600DC2C1B /* TakagiSugenoTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TakagiSugenoTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8EC1988EA5600DC2C1B /* TakagiSugenoTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TakagiSugenoTerm.h; sourceTree = "<group>"; };
-		B5E8B8ED1988EA5600DC2C1B /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test.cpp; sourceTree = "<group>"; };
-		B5E8B8EE1988EA5600DC2C1B /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
-		B5E8B8EF1988EA5600DC2C1B /* TrapezoidalTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TrapezoidalTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8F01988EA5600DC2C1B /* TrapezoidalTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrapezoidalTerm.h; sourceTree = "<group>"; };
-		B5E8B8F11988EA5600DC2C1B /* TriangularTerm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TriangularTerm.cpp; sourceTree = "<group>"; };
-		B5E8B8F21988EA5600DC2C1B /* TriangularTerm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriangularTerm.h; sourceTree = "<group>"; };
 		B5E8B8F31988EA5600DC2C1B /* GeniusAI.brain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GeniusAI.brain; sourceTree = "<group>"; };
 		B5E8B8F61988EA5600DC2C1B /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		B5E8B8F71988EA5600DC2C1B /* StdInc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StdInc.cpp; sourceTree = "<group>"; };
@@ -1165,7 +1051,6 @@
 			children = (
 				B5E8B88E1988EA5600DC2C1B /* BattleAI */,
 				B5E8B8981988EA5600DC2C1B /* EmptyAI */,
-				B5E8B8A11988EA5600DC2C1B /* FuzzyLite */,
 				B5E8B8F31988EA5600DC2C1B /* GeniusAI.brain */,
 				B5E8B8F41988EA5600DC2C1B /* StupidAI */,
 				B5E8B8FD1988EA5600DC2C1B /* VCAI */,
@@ -1192,90 +1077,6 @@
 				B5E8B89E1988EA5600DC2C1B /* exp_funcs.cpp */,
 			);
 			path = EmptyAI;
-			sourceTree = "<group>";
-		};
-		B5E8B8A11988EA5600DC2C1B /* FuzzyLite */ = {
-			isa = PBXGroup;
-			children = (
-				B5E8B8A21988EA5600DC2C1B /* AreaCentroidAlgorithm.cpp */,
-				B5E8B8A31988EA5600DC2C1B /* AreaCentroidAlgorithm.h */,
-				B5E8B8A51988EA5600DC2C1B /* CompoundTerm.cpp */,
-				B5E8B8A61988EA5600DC2C1B /* CompoundTerm.h */,
-				B5E8B8A71988EA5600DC2C1B /* defs.h */,
-				B5E8B8A81988EA5600DC2C1B /* DescriptiveAntecedent.cpp */,
-				B5E8B8A91988EA5600DC2C1B /* DescriptiveAntecedent.h */,
-				B5E8B8AA1988EA5600DC2C1B /* DiscreteTerm.cpp */,
-				B5E8B8AB1988EA5600DC2C1B /* DiscreteTerm.h */,
-				B5E8B8AC1988EA5600DC2C1B /* flScalar.h */,
-				B5E8B8AD1988EA5600DC2C1B /* FunctionTerm.cpp */,
-				B5E8B8AE1988EA5600DC2C1B /* FunctionTerm.h */,
-				B5E8B8AF1988EA5600DC2C1B /* FuzzyAnd.cpp */,
-				B5E8B8B01988EA5600DC2C1B /* FuzzyAnd.h */,
-				B5E8B8B11988EA5600DC2C1B /* FuzzyAntecedent.cpp */,
-				B5E8B8B21988EA5600DC2C1B /* FuzzyAntecedent.h */,
-				B5E8B8B31988EA5600DC2C1B /* FuzzyConsequent.cpp */,
-				B5E8B8B41988EA5600DC2C1B /* FuzzyConsequent.h */,
-				B5E8B8B51988EA5600DC2C1B /* FuzzyDefuzzifier.cpp */,
-				B5E8B8B61988EA5600DC2C1B /* FuzzyDefuzzifier.h */,
-				B5E8B8B71988EA5600DC2C1B /* FuzzyEngine.cpp */,
-				B5E8B8B81988EA5600DC2C1B /* FuzzyEngine.h */,
-				B5E8B8B91988EA5600DC2C1B /* FuzzyException.cpp */,
-				B5E8B8BA1988EA5600DC2C1B /* FuzzyException.h */,
-				B5E8B8BB1988EA5600DC2C1B /* FuzzyExceptions.cpp */,
-				B5E8B8BC1988EA5600DC2C1B /* FuzzyExceptions.h */,
-				B5E8B8BE1988EA5600DC2C1B /* FuzzyLite.h */,
-				B5E8B8C01988EA5600DC2C1B /* FuzzyModulation.cpp */,
-				B5E8B8C11988EA5600DC2C1B /* FuzzyModulation.h */,
-				B5E8B8C21988EA5600DC2C1B /* FuzzyOperation.cpp */,
-				B5E8B8C31988EA5600DC2C1B /* FuzzyOperation.h */,
-				B5E8B8C41988EA5600DC2C1B /* FuzzyOperator.cpp */,
-				B5E8B8C51988EA5600DC2C1B /* FuzzyOperator.h */,
-				B5E8B8C61988EA5600DC2C1B /* FuzzyOr.cpp */,
-				B5E8B8C71988EA5600DC2C1B /* FuzzyOr.h */,
-				B5E8B8C81988EA5600DC2C1B /* FuzzyRule.cpp */,
-				B5E8B8C91988EA5600DC2C1B /* FuzzyRule.h */,
-				B5E8B8CA1988EA5600DC2C1B /* Hedge.cpp */,
-				B5E8B8CB1988EA5600DC2C1B /* Hedge.h */,
-				B5E8B8CC1988EA5600DC2C1B /* HedgeSet.cpp */,
-				B5E8B8CD1988EA5600DC2C1B /* HedgeSet.h */,
-				B5E8B8CE1988EA5600DC2C1B /* InfixToPostfix.cpp */,
-				B5E8B8CF1988EA5600DC2C1B /* InfixToPostfix.h */,
-				B5E8B8D01988EA5600DC2C1B /* InputLVar.cpp */,
-				B5E8B8D11988EA5600DC2C1B /* InputLVar.h */,
-				B5E8B8D21988EA5600DC2C1B /* LinguisticTerm.cpp */,
-				B5E8B8D31988EA5600DC2C1B /* LinguisticTerm.h */,
-				B5E8B8D41988EA5600DC2C1B /* LinguisticVariable.cpp */,
-				B5E8B8D51988EA5600DC2C1B /* LinguisticVariable.h */,
-				B5E8B8D71988EA5600DC2C1B /* MamdaniConsequent.cpp */,
-				B5E8B8D81988EA5600DC2C1B /* MamdaniConsequent.h */,
-				B5E8B8D91988EA5600DC2C1B /* MamdaniRule.cpp */,
-				B5E8B8DA1988EA5600DC2C1B /* MamdaniRule.h */,
-				B5E8B8DB1988EA5600DC2C1B /* OutputLVar.cpp */,
-				B5E8B8DC1988EA5600DC2C1B /* OutputLVar.h */,
-				B5E8B8DD1988EA5600DC2C1B /* RectangularTerm.cpp */,
-				B5E8B8DE1988EA5600DC2C1B /* RectangularTerm.h */,
-				B5E8B8DF1988EA5600DC2C1B /* RuleBlock.cpp */,
-				B5E8B8E01988EA5600DC2C1B /* RuleBlock.h */,
-				B5E8B8E11988EA5600DC2C1B /* ShoulderTerm.cpp */,
-				B5E8B8E21988EA5600DC2C1B /* ShoulderTerm.h */,
-				B5E8B8E31988EA5600DC2C1B /* SingletonTerm.cpp */,
-				B5E8B8E41988EA5600DC2C1B /* SingletonTerm.h */,
-				B5E8B8E51988EA5600DC2C1B /* StrOp.cpp */,
-				B5E8B8E61988EA5600DC2C1B /* StrOp.h */,
-				B5E8B8E71988EA5600DC2C1B /* TakagiSugenoConsequent.cpp */,
-				B5E8B8E81988EA5600DC2C1B /* TakagiSugenoConsequent.h */,
-				B5E8B8E91988EA5600DC2C1B /* TakagiSugenoRule.cpp */,
-				B5E8B8EA1988EA5600DC2C1B /* TakagiSugenoRule.h */,
-				B5E8B8EB1988EA5600DC2C1B /* TakagiSugenoTerm.cpp */,
-				B5E8B8EC1988EA5600DC2C1B /* TakagiSugenoTerm.h */,
-				B5E8B8ED1988EA5600DC2C1B /* test.cpp */,
-				B5E8B8EE1988EA5600DC2C1B /* test.h */,
-				B5E8B8EF1988EA5600DC2C1B /* TrapezoidalTerm.cpp */,
-				B5E8B8F01988EA5600DC2C1B /* TrapezoidalTerm.h */,
-				B5E8B8F11988EA5600DC2C1B /* TriangularTerm.cpp */,
-				B5E8B8F21988EA5600DC2C1B /* TriangularTerm.h */,
-			);
-			path = FuzzyLite;
 			sourceTree = "<group>";
 		};
 		B5E8B8F41988EA5600DC2C1B /* StupidAI */ = {
@@ -1388,26 +1189,20 @@
 				B5E8B75D1988E43E00DC2C1B /* BattleHex.cpp in Sources */,
 				B5E8B7671988E43E00DC2C1B /* CGameInfoCallback.cpp in Sources */,
 				B5E8B82F1988E7EC00DC2C1B /* CAdvmapInterface.cpp in Sources */,
-				B5E8B9371988EA5600DC2C1B /* RectangularTerm.cpp in Sources */,
 				B5E8B7AF1988E43E00DC2C1B /* TypesMapObjects1.cpp in Sources */,
 				B5E8B76B1988E43E00DC2C1B /* CHeroHandler.cpp in Sources */,
 				B5E8B8441988E7EC00DC2C1B /* CCursorHandler.cpp in Sources */,
 				B5E8B82E1988E7EC00DC2C1B /* CCreatureAnimation.cpp in Sources */,
 				B5E8B7AE1988E43E00DC2C1B /* TypesClientPacks2.cpp in Sources */,
 				B5E8B90D1988EA5600DC2C1B /* BattleAI.cpp in Sources */,
-				B5E8B92C1988EA5600DC2C1B /* FuzzyRule.cpp in Sources */,
 				B5E8B9491988EA5600DC2C1B /* AIUtility.cpp in Sources */,
 				B5E8B77E1988E43E00DC2C1B /* ResourceID.cpp in Sources */,
-				B5E8B9321988EA5600DC2C1B /* LinguisticVariable.cpp in Sources */,
 				B5E8B8321988E7EC00DC2C1B /* CCastleInterface.cpp in Sources */,
 				B5E8B83D1988E7EC00DC2C1B /* CPlayerInterface.cpp in Sources */,
 				B5E8B8401988E7EC00DC2C1B /* CSpellWindow.cpp in Sources */,
-				B5E8B91B1988EA5600DC2C1B /* CompoundTerm.cpp in Sources */,
 				B5E8B8891988E90A00DC2C1B /* NetPacksServer.cpp in Sources */,
-				B5E8B91C1988EA5600DC2C1B /* DescriptiveAntecedent.cpp in Sources */,
 				B5E8B77A1988E43E00DC2C1B /* CFilesystemLoader.cpp in Sources */,
 				B5E8B77F1988E43E00DC2C1B /* GameConstants.cpp in Sources */,
-				B5E8B9391988EA5600DC2C1B /* ShoulderTerm.cpp in Sources */,
 				B5E8B7631988E43E00DC2C1B /* CConfigHandler.cpp in Sources */,
 				B5E8B8461988E7EC00DC2C1B /* CIntObject.cpp in Sources */,
 				B5E8B75E1988E43E00DC2C1B /* BattleState.cpp in Sources */,
@@ -1417,15 +1212,12 @@
 				B5E8B7641988E43E00DC2C1B /* CConsoleHandler.cpp in Sources */,
 				B5E8B9451988EA5600DC2C1B /* StdInc.cpp in Sources */,
 				B5E8B8361988E7EC00DC2C1B /* CHeroWindow.cpp in Sources */,
-				B5E8B9291988EA5600DC2C1B /* FuzzyOperation.cpp in Sources */,
 				B5E8B7801988E43E00DC2C1B /* HeroBonus.cpp in Sources */,
 				B5E8B8581988E7EC00DC2C1B /* mapHandler.cpp in Sources */,
 				B5E8B83A1988E7EC00DC2C1B /* CMessage.cpp in Sources */,
-				B5E8B9201988EA5600DC2C1B /* FuzzyAntecedent.cpp in Sources */,
 				B5E8B82C1988E7EC00DC2C1B /* CBattleInterface.cpp in Sources */,
 				B54D4737198657F500A8E635 /* main.m in Sources */,
 				B5E8B8371988E7EC00DC2C1B /* CKingdomInterface.cpp in Sources */,
-				B5E8B9231988EA5600DC2C1B /* FuzzyEngine.cpp in Sources */,
 				B5E8B7621988E43E00DC2C1B /* CBuildingHandler.cpp in Sources */,
 				B5E8B7881988E43E00DC2C1B /* CArmedInstance.cpp in Sources */,
 				B5E8B77B1988E43E00DC2C1B /* CMemoryStream.cpp in Sources */,
@@ -1436,22 +1228,15 @@
 				B5E8B9131988EA5600DC2C1B /* CEmptyAI.cpp in Sources */,
 				B5E8B7901988E43E00DC2C1B /* CommonConstructors.cpp in Sources */,
 				B5E8B7731988E43E00DC2C1B /* CTownHandler.cpp in Sources */,
-				B5E8B9241988EA5600DC2C1B /* FuzzyException.cpp in Sources */,
-				B5E8B93B1988EA5600DC2C1B /* StrOp.cpp in Sources */,
 				B5E8B7661988E43E00DC2C1B /* CCreatureSet.cpp in Sources */,
 				B5E8B9501988EA5600DC2C1B /* VCAI.cpp in Sources */,
-				B5E8B9401988EA5600DC2C1B /* TrapezoidalTerm.cpp in Sources */,
 				B5E8B7741988E43E00DC2C1B /* AdapterLoaders.cpp in Sources */,
 				B5E8B7BE1988E43E00DC2C1B /* VCMI_Lib.cpp in Sources */,
-				B5E8B9351988EA5600DC2C1B /* MamdaniRule.cpp in Sources */,
 				B5E8B94B1988EA5600DC2C1B /* Fuzzy.cpp in Sources */,
 				B5E8B76F1988E43E00DC2C1B /* Connection.cpp in Sources */,
-				B5E8B92E1988EA5600DC2C1B /* HedgeSet.cpp in Sources */,
-				B5E8B9251988EA5600DC2C1B /* FuzzyExceptions.cpp in Sources */,
 				B5E8B75C1988E43E00DC2C1B /* BattleAction.cpp in Sources */,
 				B5E8B7761988E43E00DC2C1B /* CBinaryReader.cpp in Sources */,
 				B5E8B7701988E43E00DC2C1B /* CRandomGenerator.cpp in Sources */,
-				B5E8B9341988EA5600DC2C1B /* MamdaniConsequent.cpp in Sources */,
 				B5E8B7781988E43E00DC2C1B /* CFileInfo.cpp in Sources */,
 				B5E8B94D1988EA5600DC2C1B /* main.cpp in Sources */,
 				B5E8B78A1988E43E00DC2C1B /* CGHeroInstance.cpp in Sources */,
@@ -1459,21 +1244,16 @@
 				B5E8B8341988E7EC00DC2C1B /* CDefHandler.cpp in Sources */,
 				B5E8B7721988E43E00DC2C1B /* CThreadHelper.cpp in Sources */,
 				B5E8B9471988EA5600DC2C1B /* StupidAI.cpp in Sources */,
-				B5E8B92A1988EA5600DC2C1B /* FuzzyOperator.cpp in Sources */,
 				B5E8B78D1988E43E00DC2C1B /* CGTownInstance.cpp in Sources */,
-				B5E8B9211988EA5600DC2C1B /* FuzzyConsequent.cpp in Sources */,
 				B5E8B8871988E90A00DC2C1B /* CQuery.cpp in Sources */,
 				B5E8B78F1988E43E00DC2C1B /* CObjectHandler.cpp in Sources */,
 				B5E8B78E1988E43E00DC2C1B /* CObjectClassesHandler.cpp in Sources */,
 				B5E8B84B1988E7EC00DC2C1B /* GUIClasses.cpp in Sources */,
-				B5E8B9281988EA5600DC2C1B /* FuzzyModulation.cpp in Sources */,
 				B5E8B9171988EA5600DC2C1B /* exp_funcs.cpp in Sources */,
 				B5E8B7851988E43E00DC2C1B /* CBasicLogConfigurator.cpp in Sources */,
 				B5E8B7981988E43E00DC2C1B /* CMap.cpp in Sources */,
 				B5E8B7B31988E43E00DC2C1B /* TypesServerPacks.cpp in Sources */,
-				B5E8B93E1988EA5600DC2C1B /* TakagiSugenoTerm.cpp in Sources */,
 				B5E8B7841988E43E00DC2C1B /* JsonNode.cpp in Sources */,
-				B5E8B93C1988EA5600DC2C1B /* TakagiSugenoConsequent.cpp in Sources */,
 				B5E8B7821988E43E00DC2C1B /* IHandlerBase.cpp in Sources */,
 				B5E8B8301988E7EC00DC2C1B /* CAnimation.cpp in Sources */,
 				B5E8B84A1988E7EC00DC2C1B /* SDL_Extensions.cpp in Sources */,
@@ -1481,16 +1261,12 @@
 				B5E8B8351988E7EC00DC2C1B /* CGameInfo.cpp in Sources */,
 				B5E8B7951988E43E00DC2C1B /* MiscObjects.cpp in Sources */,
 				B5E8B8451988E7EC00DC2C1B /* CGuiHandler.cpp in Sources */,
-				B5E8B91D1988EA5600DC2C1B /* DiscreteTerm.cpp in Sources */,
 				B5E8B85C1988E7EC00DC2C1B /* StdInc.cpp in Sources */,
-				B5E8B9191988EA5600DC2C1B /* AreaCentroidAlgorithm.cpp in Sources */,
-				B5E8B9301988EA5600DC2C1B /* InputLVar.cpp in Sources */,
 				B5E8B77C1988E43E00DC2C1B /* CZipLoader.cpp in Sources */,
 				B5E8B7B01988E43E00DC2C1B /* TypesMapObjects2.cpp in Sources */,
 				B5E8B82B1988E7EC00DC2C1B /* CBattleAnimations.cpp in Sources */,
 				B5E8B8881988E90A00DC2C1B /* CVCMIServer.cpp in Sources */,
 				B5E8B8491988E7EC00DC2C1B /* Geometries.cpp in Sources */,
-				B5E8B9381988EA5600DC2C1B /* RuleBlock.cpp in Sources */,
 				B5E8B76E1988E43E00DC2C1B /* CObstacleInstance.cpp in Sources */,
 				B5E8B7791988E43E00DC2C1B /* CFileInputStream.cpp in Sources */,
 				B5E8B78C1988E43E00DC2C1B /* CGPandoraBox.cpp in Sources */,
@@ -1502,29 +1278,22 @@
 				B5E8B79C1988E43E00DC2C1B /* MapFormatH3M.cpp in Sources */,
 				B5E8B7AD1988E43E00DC2C1B /* TypesClientPacks1.cpp in Sources */,
 				B5E8B7611988E43E00DC2C1B /* CBonusTypeHandler.cpp in Sources */,
-				B5E8B9361988EA5600DC2C1B /* OutputLVar.cpp in Sources */,
 				B5E8B83E1988E7EC00DC2C1B /* CPreGame.cpp in Sources */,
 				B5E8B7B71988E43E00DC2C1B /* CRmgTemplate.cpp in Sources */,
-				B5E8B9221988EA5600DC2C1B /* FuzzyDefuzzifier.cpp in Sources */,
 				B5E8B8481988E7EC00DC2C1B /* Fonts.cpp in Sources */,
 				B5E8B7961988E43E00DC2C1B /* ObjectTemplate.cpp in Sources */,
 				B5E8B7B21988E43E00DC2C1B /* TypesPregamePacks.cpp in Sources */,
-				B5E8B9311988EA5600DC2C1B /* LinguisticTerm.cpp in Sources */,
 				B5E8B7651988E43E00DC2C1B /* CCreatureHandler.cpp in Sources */,
-				B5E8B9411988EA5600DC2C1B /* TriangularTerm.cpp in Sources */,
 				B5E8B7871988E43E00DC2C1B /* LogicalExpression.cpp in Sources */,
 				B5E8B94E1988EA5600DC2C1B /* StdInc.cpp in Sources */,
-				B5E8B92F1988EA5600DC2C1B /* InfixToPostfix.cpp in Sources */,
 				B5E8B79F1988E43E00DC2C1B /* ioapi.c in Sources */,
 				B5E8B82A1988E7EC00DC2C1B /* AdventureMapClasses.cpp in Sources */,
 				B5E8B8411988E7EC00DC2C1B /* CVideoHandler.cpp in Sources */,
 				B5E8B7AA1988E43E00DC2C1B /* zip.c in Sources */,
 				B5E8B77D1988E43E00DC2C1B /* Filesystem.cpp in Sources */,
 				B5E8B7B81988E43E00DC2C1B /* CRmgTemplateStorage.cpp in Sources */,
-				B5E8B92D1988EA5600DC2C1B /* Hedge.cpp in Sources */,
 				B5E8B8331988E7EC00DC2C1B /* CCreatureWindow.cpp in Sources */,
 				B5E8B7861988E43E00DC2C1B /* CLogger.cpp in Sources */,
-				B5E8B93F1988EA5600DC2C1B /* test.cpp in Sources */,
 				B5E8B8591988E7EC00DC2C1B /* NetPacksClient.cpp in Sources */,
 				B5E8B7A91988E43E00DC2C1B /* unzip.c in Sources */,
 				B5E8B79B1988E43E00DC2C1B /* CMapService.cpp in Sources */,
@@ -1535,7 +1304,6 @@
 				B5E8B83B1988E7EC00DC2C1B /* CMT.cpp in Sources */,
 				B5E8B82D1988E7EC00DC2C1B /* CBattleInterfaceClasses.cpp in Sources */,
 				B5E8B7B61988E43E00DC2C1B /* CMapGenOptions.cpp in Sources */,
-				B5E8B91E1988EA5600DC2C1B /* FunctionTerm.cpp in Sources */,
 				B5E8B7991988E43E00DC2C1B /* CMapEditManager.cpp in Sources */,
 				B5E8B8381988E7EC00DC2C1B /* Client.cpp in Sources */,
 				B5E8B8311988E7EC00DC2C1B /* CBitmapHandler.cpp in Sources */,
@@ -1546,14 +1314,10 @@
 				B5E8B7811988E43E00DC2C1B /* IGameCallback.cpp in Sources */,
 				B5E8B75F1988E43E00DC2C1B /* CArtHandler.cpp in Sources */,
 				B5E8B7BB1988E43E00DC2C1B /* CZonePlacer.cpp in Sources */,
-				B5E8B93A1988EA5600DC2C1B /* SingletonTerm.cpp in Sources */,
 				B5E8B83C1988E7EC00DC2C1B /* CMusicHandler.cpp in Sources */,
 				B5E8B94C1988EA5600DC2C1B /* Goals.cpp in Sources */,
 				B5E8B7891988E43E00DC2C1B /* CBank.cpp in Sources */,
-				B5E8B91F1988EA5600DC2C1B /* FuzzyAnd.cpp in Sources */,
-				B5E8B93D1988EA5600DC2C1B /* TakagiSugenoRule.cpp in Sources */,
 				B5E8B78B1988E43E00DC2C1B /* CGMarket.cpp in Sources */,
-				B5E8B92B1988EA5600DC2C1B /* FuzzyOr.cpp in Sources */,
 				B5E8B7B51988E43E00DC2C1B /* CMapGenerator.cpp in Sources */,
 				B5E8B7711988E43E00DC2C1B /* CSpellHandler.cpp in Sources */,
 				B5E8B7691988E43E00DC2C1B /* CGameState.cpp in Sources */,

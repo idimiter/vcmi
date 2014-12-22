@@ -18,8 +18,6 @@
 #include "../IGameCallback.h"
 #include "../CGameState.h"
 
-using namespace boost::assign;
-
 std::vector<const CArtifact *> CGTownInstance::merchantArtifacts;
 std::vector<int> CGTownInstance::universitySkills;
 
@@ -34,13 +32,11 @@ void CGDwelling::initObj()
 
 			if (getOwner() != PlayerColor::NEUTRAL)
 				cb->gameState()->players[getOwner()].dwellings.push_back (this);
-		}
-			//putStack(SlotID(0), new CStackInstance(CreatureID::GOLD_GOLEM, 9));
-			//putStack(SlotID(1), new CStackInstance(CreatureID::DIAMOND_GOLEM, 6));
 
-			//putStack(SlotID(0), new CStackInstance(CreatureID::EARTH_ELEMENTAL, 12));
+			assert(!creatures.empty());
+			assert(!creatures[0].second.empty());
 			break;
-
+		}
 	case Obj::REFUGEE_CAMP:
 		//is handled within newturn func
 		break;
@@ -527,7 +523,7 @@ void CGTownInstance::onHeroLeave(const CGHeroInstance * h) const
 	if (visitingHero == h)
 	{
 		cb->stopHeroVisitCastle(this, h);
-		logGlobal->warnStream() << h->name << " correctly left town " << name;
+		//logGlobal->warnStream() << h->name << " correctly left town " << name;
 	}
 	else
 		logGlobal->warnStream() << "Warning, " << h->name << " tries to leave the town " << name << " but hero is not inside.";
@@ -678,7 +674,7 @@ bool CGTownInstance::passableFor(PlayerColor color) const
 
 void CGTownInstance::getOutOffsets( std::vector<int3> &offsets ) const
 {
-	offsets += int3(-1,2,0), int3(-3,2,0);
+	offsets = {int3(-1,2,0), int3(-3,2,0)};
 }
 
 void CGTownInstance::removeCapitols (PlayerColor owner) const
@@ -914,12 +910,13 @@ bool CGTownInstance::addBonusIfBuilt(BuildingID building, Bonus::BonusType type,
 
 void CGTownInstance::setVisitingHero(CGHeroInstance *h)
 {
-	if (!(!!visitingHero == !h))
-	{
-		logGlobal->warnStream() << boost::format("Hero visiting town %s is %s ") % name % (visitingHero.get() ? visitingHero->name : "NULL");
-		logGlobal->warnStream() << boost::format("New hero will be %s ") % (h ? h->name : "NULL");
-		assert(!!visitingHero == !h);
-	}
+	//if (!(!!visitingHero == !h))
+	//{
+	//	logGlobal->warnStream() << boost::format("Hero visiting town %s is %s ") % name % (visitingHero.get() ? visitingHero->name : "NULL");
+	//	logGlobal->warnStream() << boost::format("New hero will be %s ") % (h ? h->name : "NULL");
+	//	
+	//}
+	assert(!!visitingHero == !h);
 
 	if(h)
 	{

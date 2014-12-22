@@ -10,29 +10,29 @@
 	<string>vcmi</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>FFE5188C-2AE4-4E9F-B2B5-7BCB34E498DC</key>
-		<string>https://github.com/vcmi/vcmi.git</string>
+		<key>CFA1894952E098351830343D37DA02F127CD2724</key>
+		<string>github.com:idimiter/vcmi.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>iOS/vcmi/vcmi.xcodeproj/project.xcworkspace</string>
+	<string>ios/vcmi.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>FFE5188C-2AE4-4E9F-B2B5-7BCB34E498DC</key>
-		<string>../../../..</string>
+		<key>CFA1894952E098351830343D37DA02F127CD2724</key>
+		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/vcmi/vcmi.git</string>
+	<string>github.com:idimiter/vcmi.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>FFE5188C-2AE4-4E9F-B2B5-7BCB34E498DC</string>
+	<string>CFA1894952E098351830343D37DA02F127CD2724</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>FFE5188C-2AE4-4E9F-B2B5-7BCB34E498DC</string>
+			<string>CFA1894952E098351830343D37DA02F127CD2724</string>
 			<key>IDESourceControlWCCName</key>
 			<string>vcmi</string>
 		</dict>

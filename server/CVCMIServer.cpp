@@ -18,7 +18,7 @@
 #include "CVCMIServer.h"
 #include "../lib/StartInfo.h"
 #include "../lib/mapping/CMap.h"
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 #include "../lib/Interprocess.h"
 #endif
 #include "../lib/VCMI_Lib.h"
@@ -32,7 +32,7 @@
 
 #include "../lib/UnlockGuard.h"
 
-#if defined(__GNUC__) && !defined (__MINGW32__) && !defined(__ANDROID__)
+#if defined(__GNUC__) && !defined (__MINGW32__) && !defined(VCMI_ANDROID)
 #include <execinfo.h>
 #endif
 
@@ -46,7 +46,7 @@ std::string SERVER_NAME = GameConstants::VCMI_VERSION + std::string(" (") + SERV
 using namespace boost;
 using namespace boost::asio;
 using namespace boost::asio::ip;
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 namespace intpr = boost::interprocess;
 #endif
 bool end2 = false;
@@ -404,7 +404,7 @@ void CVCMIServer::newPregame()
 
 void CVCMIServer::start()
 {
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 	ServerReady *sr = nullptr;
 	intpr::mapped_region *mr;
 	try
@@ -427,7 +427,7 @@ void CVCMIServer::start()
     logNetwork->infoStream()<<"Listening for connections at port " << acceptor->local_endpoint().port();
 	auto  s = new tcp::socket(acceptor->get_io_service());
 	boost::thread acc(std::bind(vaccept,acceptor,s,&error));
-#ifndef __ANDROID__
+#ifndef VCMI_ANDROID
 	sr->setToTrueAndNotify();
 	delete mr;
 #endif
@@ -478,7 +478,7 @@ void CVCMIServer::loadGame()
 	boost::system::error_code error;
 	ui8 clients;
 
-	c >> clients >> fname; //how many clients should be connected - TODO: support more than one
+	c >> clients >> fname; //how many clients should be connected
 
 // 	{
 // 		char sig[8];
@@ -524,11 +524,14 @@ void CVCMIServer::loadGame()
 			}
 #ifndef __IOS__
 			cc = new CConnection(s,NAME);
+<<<<<<< HEAD
 #else
 			cc = new CConnection(s,SERVER_NAME);
 #endif // __IOS__
 
 			cc->addStdVecItems(gh.gs);
+=======
+>>>>>>> master/develop
 		}	
 		gh.conns.insert(cc);
 	}
@@ -582,7 +585,7 @@ static void handleCommandOptions(int argc, char *argv[])
 #endif // __IOS__
 }
 
-#if defined(__GNUC__) && !defined (__MINGW32__) && !defined(__ANDROID__)
+#if defined(__GNUC__) && !defined (__MINGW32__) && !defined(VCMI_ANDROID)
 void handleLinuxSignal(int sig)
 {
 	const int STACKTRACE_SIZE = 100;
@@ -619,22 +622,29 @@ int main(int argc, char** argv)
 #endif // __IOS__
 	// Installs a sig sev segmentation violation handler
 	// to log stacktrace
-	#if defined(__GNUC__) && !defined (__MINGW32__) && !defined(__ANDROID__)
+	#if defined(__GNUC__) && !defined (__MINGW32__) && !defined(VCMI_ANDROID)
 	signal(SIGSEGV, handleLinuxSignal);
 	#endif
 
 	console = new CConsoleHandler;
-	CBasicLogConfigurator logConfig(VCMIDirs::get().userCachePath() + "/VCMI_Server_log.txt", console);
+	CBasicLogConfigurator logConfig(VCMIDirs::get().userCachePath() / "VCMI_Server_log.txt", console);
 	logConfig.configureDefault();
 
+<<<<<<< HEAD
 #ifndef __IOS__
 	preinitDLL(console);
     settings.init();
 	logConfig.configure();
 
+=======
+>>>>>>> master/develop
 	handleCommandOptions(argc, argv);
 	port = cmdLineOptions["port"].as<int>();
 	logNetwork->infoStream() << "Port " << port << " will be used.";
+
+	preinitDLL(console);
+	settings.init();
+	logConfig.configure();
 
 	loadDLLClasses();
 #else

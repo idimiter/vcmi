@@ -1,11 +1,12 @@
 #pragma once
 
 
-#include "../lib/CondSh.h"
+//#include "../lib/CondSh.h"
 #include "../lib/FunctionList.h"
 #include "../lib/CGameInterface.h"
+#include "../lib/NetPacksBase.h"
 #include "gui/CIntObject.h"
-#include "../lib/CGameState.h"
+//#include "../lib/CGameState.h"
 
 #ifdef __GNUC__
 #define sprintf_s snprintf
@@ -29,8 +30,8 @@
  */
 
 class CDefEssential;
-class CAdventureMapButton;
-class CHighlightableButtonsGroup;
+class CButton;
+class CToggleGroup;
 class CDefHandler;
 struct TryMoveHero;
 class CDefEssential;
@@ -85,6 +86,7 @@ enum
 /// Central class for managing user interface logic
 class CPlayerInterface : public CGameInterface, public ILockedUpdatable
 {
+	const CArmedInstance * currentSelection;
 public:
 	bool observerInDuelMode;
 
@@ -116,6 +118,8 @@ public:
 	shared_ptr<CBattleGameInterface> autofightingAI; //AI that makes decisions
 	bool isAutoFightOn; //Flag, switch it to stop quick combat. Don't touch if there is no battle interface.
 
+	const CArmedInstance * getSelection();
+	void setSelection(const CArmedInstance * obj);
 
 	struct SpellbookLastSetting
 	{
@@ -216,7 +220,7 @@ public:
 	void yourTacticPhase(int distance) override;
 
 	//-------------//
-	void showArtifactAssemblyDialog(ui32 artifactID, ui32 assembleTo, bool assemble, CFunctionList<void()> onYes, CFunctionList<void()> onNo);
+	void showArtifactAssemblyDialog(ui32 artifactID, ui32 assembleTo, bool assemble, CFunctionList<bool()> onYes, CFunctionList<bool()> onNo);
 	void garrisonsChanged(std::vector<const CGObjectInstance *> objs);
 	void garrisonChanged(const CGObjectInstance * obj);
 	void heroKilled(const CGHeroInstance* hero);
@@ -245,6 +249,7 @@ public:
 	void movementPxStep( const TryMoveHero &details, int i, const int3 &hp, const CGHeroInstance * ho );//performing step of movement
 	void finishMovement( const TryMoveHero &details, const int3 &hp, const CGHeroInstance * ho ); //finish movement
 	void eraseCurrentPathOf( const CGHeroInstance * ho, bool checkForExistanceOfPath = true );
+
 	void removeLastNodeFromPath(const CGHeroInstance *ho);
 	CGPath *getAndVerifyPath( const CGHeroInstance * h );
 	void acceptTurn(); //used during hot seat after your turn message is close

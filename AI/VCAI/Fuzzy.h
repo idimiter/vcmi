@@ -1,5 +1,5 @@
 #pragma once
-#include "../FuzzyLite/FuzzyLite.h"
+#include "fl/Headers.h"
 #include "Goals.h"
 
 /*
@@ -16,36 +16,40 @@ class VCAI;
 class CArmedInstance;
 class CBank;
 
+class engineBase
+{
+public:
+	fl::Engine engine;
+	fl::RuleBlock rules;
+
+	engineBase();
+	void configure();
+	void addRule(const std::string &txt);
+};
+
 class FuzzyHelper
 {
 	friend class VCAI;
 
-	fl::FuzzyEngine engine;
-
-	fl::InputLVar* bankInput;
-	fl::OutputLVar* bankDanger;
-	fl::RuleBlock bankBlock;
-
-	class TacticalAdvantage
+	class TacticalAdvantage : public engineBase
 	{
 	public:
-		fl::InputLVar * ourWalkers, * ourShooters, * ourFlyers, * enemyWalkers, * enemyShooters, * enemyFlyers;
-		fl::InputLVar * ourSpeed, * enemySpeed;
-		fl::InputLVar * bankPresent;
-		fl::InputLVar * castleWalls;
-		fl::OutputLVar * threat;
-		fl::RuleBlock tacticalAdvantage;
+		fl::InputVariable * ourWalkers, * ourShooters, * ourFlyers, * enemyWalkers, * enemyShooters, * enemyFlyers;
+		fl::InputVariable * ourSpeed, * enemySpeed;
+		fl::InputVariable * bankPresent;
+		fl::InputVariable * castleWalls;
+		fl::OutputVariable * threat;
 		~TacticalAdvantage();
 	} ta;
 
-	class EvalVisitTile
+	class EvalVisitTile : public engineBase
 	{
 	public:
-		fl::InputLVar * strengthRatio;
-		fl::InputLVar * heroStrength;
-		fl::InputLVar * turnDistance;
-		fl::InputLVar * missionImportance;
-		fl::OutputLVar * value;
+		fl::InputVariable * strengthRatio;
+		fl::InputVariable * heroStrength;
+		fl::InputVariable * turnDistance;
+		fl::InputVariable * missionImportance;
+		fl::OutputVariable * value;
 		fl::RuleBlock rules;
 		~EvalVisitTile();
 	} vt;
@@ -55,7 +59,6 @@ public:
 	//blocks should be initialized in this order, which may be confusing :/
 
 	FuzzyHelper();
-	void initBank();
 	void initTacticalAdvantage();
 	void initVisitTile();
 

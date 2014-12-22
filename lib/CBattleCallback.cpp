@@ -1378,11 +1378,11 @@ AttackableTiles CBattleInfoCallback::getPotentiallyAttackableHexes (const CStack
 		case -WN: //-17 //left-up or right-up
 		case WN + 1: //18 //right-down
 		case -WN + 1: //-16 //right-up
-			BattleHex::checkAndPush (destinationTile.hex + pseudoVector + ((hex/WN)%2 ? 1 : -1 ), hexes);
+			BattleHex::checkAndPush (destinationTile.hex + pseudoVector + (((hex/WN)%2) ? 1 : -1 ), hexes);
 			break;
 		case WN-1: //16 //left-down
 		case -WN-1: //-18 //left-up
-			BattleHex::checkAndPush (destinationTile.hex + pseudoVector + ((hex/WN)%2 ? 1 : 0), hexes);
+			BattleHex::checkAndPush (destinationTile.hex + pseudoVector + (((hex/WN)%2) ? 1 : 0), hexes);
 			break;
 		}
 		for (BattleHex tile : hexes)
@@ -1819,7 +1819,6 @@ ESpellCastProblem::ESpellCastProblem CBattleInfoCallback::battleCanCastThisSpell
 					case CSpell::NEUTRAL:
 							targetExists = true;
 							break;
-						break;
 					case CSpell::NEGATIVE:
 						if(!casterStack || !ti.smart)
 						{
@@ -2225,7 +2224,7 @@ SpellID CBattleInfoCallback::getRandomBeneficialSpell(const CStack * subject) co
 
 	for(const CSpell *spell : VLC->spellh->objects)
 	{
-		if (spell->isPositive()) //only positive
+		if (spell->isPositive() && !spell->isRisingSpell()) //only positive and not rising
 		{
 			if (subject->hasBonusFrom(Bonus::SPELL_EFFECT, spell->id)
 				|| battleCanCastThisSpellHere(subject->owner, spell, ECastingMode::CREATURE_ACTIVE_CASTING, subject->position) != ESpellCastProblem::OK)
@@ -2296,6 +2295,7 @@ SpellID CBattleInfoCallback::getRandomBeneficialSpell(const CStack * subject) co
 						continue;
 				}
 				break;
+			case SpellID::TELEPORT: //issue 1928
 			case SpellID::CLONE: //not allowed
 				continue;
 				break;

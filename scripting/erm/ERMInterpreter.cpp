@@ -23,9 +23,9 @@
 
 namespace spirit = boost::spirit;
 using namespace VERMInterpreter;
-using namespace boost::assign;
+
 typedef int TUnusedType;
-using namespace boost::assign;
+
 
 ERMInterpreter *erm;
 Environment *topDyn;
@@ -368,19 +368,19 @@ void ERMInterpreter::scanForScripts()
 {
 	using namespace boost::filesystem;
 	//parser checking
-	if(!exists(VCMIDirs::get().dataPaths().back() + "/Data/s/"))
+	const path dataPath = VCMIDirs::get().dataPaths().back() / "Data" / "s";
+	if(!exists(dataPath))
 	{
-		logGlobal->warnStream() << "Warning: Folder " << VCMIDirs::get().dataPaths().back() << "/Data/s/ doesn't exist!";
+		logGlobal->warnStream() << "Warning: Folder " << dataPath << " doesn't exist!";
 		return;
 	}
 	directory_iterator enddir;
-	for (directory_iterator dir(VCMIDirs::get().dataPaths().back() + "/Data/s"); dir!=enddir; dir++)
+	for (directory_iterator dir(dataPath); dir!=enddir; dir++)
 	{
 		if(is_regular(dir->status()))
 		{
-			std::string name = dir->path().leaf().string();
-			if( boost::algorithm::ends_with(name, ".erm") ||
-				boost::algorithm::ends_with(name, ".verm") )
+			const std::string ext = boost::to_upper_copy(dir->path().extension().string());
+			if (ext == ".ERM" || ext == ".VERM")
 			{
 				ERMParser ep(dir->path().string());
 				FileInfo * finfo = new FileInfo;
@@ -1339,10 +1339,10 @@ struct ERMExpDispatch : boost::static_visitor<>
 					std::vector<int> params(FunctionLocalVars::NUM_PARAMETERS, 0);
 					params.back() = it;
 					//owner->getFuncVars(funNum)->getParam(16) = it;
-					ERMInterpreter::TIDPattern tip;
+					
 					std::vector<int> v1;
-					v1 += funNum;
-					insert(tip) (v1.size(), v1);
+					v1.push_back(funNum);
+					ERMInterpreter::TIDPattern tip = {{v1.size(), v1}};
 					erm->executeTriggerType(TriggerType("FU"), true, tip, params);
 					it = erm->getFuncVars(funNum)->getParam(16);
 				}
@@ -1394,7 +1394,7 @@ struct ERMExpDispatch : boost::static_visitor<>
 					{
 						int heroNum = erm->getIexp(tid[0]).getInt();
 						if(heroNum == -1)
-							hero = icb->getSelectedHero();
+							assert(false); //FIXME: use new hero selection mechanics
 						else
 							hero = icb->getHeroWithSubid(heroNum);
 
@@ -2394,15 +2394,9 @@ void ERMInterpreter::heroVisit(const CGHeroInstance *visitor, const CGObjectInst
 		return;
 	setCurrentlyVisitedObj(visitedObj->pos);
 	TIDPattern tip;
-#ifdef CPP11_USE_INITIALIZERS_LIST
 	tip[1] = {visitedObj->ID};
 	tip[2] = {visitedObj->ID, visitedObj->subID};
 	tip[3] = {visitedObj->pos.x, visitedObj->pos.y, visitedObj->pos.z};
-#else
-	tip[1] = list_of(visitedObj->ID);
-	tip[2] = list_of((int)visitedObj->ID)(visitedObj->subID);
-	tip[3] = list_of(visitedObj->pos.x)(visitedObj->pos.y)(visitedObj->pos.z);
-#endif
 	executeTriggerType(VERMInterpreter::TriggerType("OB"), start, tip);
 }
 
@@ -2515,9 +2509,11 @@ struct VNodeEvaluator : boost::static_visitor<VOption>
 	}
 	VOption operator()(VSymbol const& opt) const
 	{
-		std::map<std::string, VFunc::Eopt> symToFunc = boost::assign::map_list_of
-			("<", VFunc::LT)("<=", VFunc::LE)(">", VFunc::GT)(">=", VFunc::GE)("=", VFunc::EQ)("+", VFunc::ADD)("-", VFunc::SUB)
-			("*", VFunc::MULT)("/", VFunc::DIV)("%", VFunc::MOD);
+		std::map<std::string, VFunc::Eopt> symToFunc =
+		{
+			{"<", VFunc::LT},{"<=", VFunc::LE},{">", VFunc::GT},{">=", VFunc::GE},{"=", VFunc::EQ},{"+", VFunc::ADD},{"-", VFunc::SUB},
+			{"*", VFunc::MULT},{"/", VFunc::DIV},{"%", VFunc::MOD}
+		};
 
 		//check keywords
 		if(opt.text == "quote")

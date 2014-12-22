@@ -38,18 +38,6 @@ int CGameInfoCallback::getResource(PlayerColor Player, Res::ERes which) const
 	return p->resources[which];
 }
 
-const CGHeroInstance* CGameInfoCallback::getSelectedHero( PlayerColor Player ) const
-{
-	const PlayerState *p = getPlayer(Player);
-	ERROR_RET_VAL_IF(!p, "No player info!", nullptr);
-	return getHero(p->currentSelection);
-}
-
-const CGHeroInstance* CGameInfoCallback::getSelectedHero() const
-{
-	return getSelectedHero(gs->currentPlayer);
-}
-
 const PlayerSettings * CGameInfoCallback::getPlayerSettings(PlayerColor color) const
 {
 	return &gs->scenarioOps->getIthPlayersSettings(color);
@@ -73,8 +61,16 @@ bool CGameInfoCallback::isAllowed( int type, int id )
 const PlayerState * CGameInfoCallback::getPlayer(PlayerColor color, bool verbose) const
 {
 	ERROR_VERBOSE_OR_NOT_RET_VAL_IF(!hasAccess(color), verbose, "Cannot access player " << color << "info!", nullptr);
+	//if (!vstd::contains(gs->players, color))
+	//{
+	//	logGlobal->errorStream() << "Cannot access player " << color << "info!";
+	//	return nullptr; //macros are not really useful when debugging :?
+	//}
+	//else
+	//{
 	ERROR_VERBOSE_OR_NOT_RET_VAL_IF(!vstd::contains(gs->players,color), verbose, "Cannot find player " << color << "info!", nullptr);
 	return &gs->players[color];
+	//}
 }
 
 const CTown * CGameInfoCallback::getNativeTown(PlayerColor color) const
@@ -112,7 +108,7 @@ const CGObjectInstance* CGameInfoCallback::getObj(ObjectInstanceID objid, bool v
 		return nullptr;
 	}
 
-	if(!isVisible(ret, player))
+	if(!isVisible(ret, player) && ret->tempOwner != player)
 	{
 		if(verbose)
             logGlobal->errorStream() << "Cannot get object with id " << oid << ". Object is not visible.";
@@ -383,7 +379,7 @@ EBuildingState::EBuildingState CGameInfoCallback::canBuildStructure( const CGTow
 
 	if(ID == BuildingID::CAPITOL)
 	{
-		const PlayerState *ps = getPlayer(t->tempOwner);
+		const PlayerState *ps = getPlayer(t->tempOwner, false);
 		if(ps)
 		{
 			for(const CGTownInstance *t : ps->towns)
@@ -529,7 +525,8 @@ std::vector < const CGHeroInstance *> CPlayerSpecificInfoCallback::getHeroesInfo
 	std::vector < const CGHeroInstance *> ret;
 	for(auto hero : gs->map->heroesOnMap)
 	{
-		if( !player || (hero->tempOwner == *player) ||
+		// !player || // - why would we even get access to hero not owned by any player?
+		if((hero->tempOwner == *player) ||
 			(isVisible(hero->getPosition(false), player) && !onlyOur)	)
 		{
 			ret.push_back(hero);

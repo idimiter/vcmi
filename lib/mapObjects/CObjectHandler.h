@@ -19,7 +19,7 @@
 class CGHeroInstance;
 class IGameCallback;
 class CGObjectInstance;
-class MetaString;
+struct MetaString;
 struct BattleResult;
 
 //<--------------------------- 01.08.2014 --------------------------
@@ -46,7 +46,8 @@ public:
 class DLL_LINKAGE IObjectInterface
 {
 public:
-	static IGameCallbackHolder cb; // 01.08.2014
+	static IGameCallbackHolder * cb; // 01.08.2014
+//	static IGameCallback *cb;
 
 	IObjectInterface();
 	virtual ~IObjectInterface();

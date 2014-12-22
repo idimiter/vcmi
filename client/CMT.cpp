@@ -8,13 +8,13 @@
 
 #include "../lib/filesystem/Filesystem.h"
 #include "CPreGame.h"
-#include "CCastleInterface.h"
+#include "windows/CCastleInterface.h"
 #include "../lib/CConsoleHandler.h"
 #include "gui/CCursorHandler.h"
 #include "../lib/CGameState.h"
 #include "../CCallback.h"
 #include "CPlayerInterface.h"
-#include "CAdvmapInterface.h"
+#include "windows/CAdvmapInterface.h"
 #include "../lib/CBuildingHandler.h"
 #include "CVideoHandler.h"
 #include "../lib/CHeroHandler.h"
@@ -39,8 +39,9 @@
 #include "../lib/GameConstants.h"
 #include "gui/CGuiHandler.h"
 #include "../lib/logging/CBasicLogConfigurator.h"
+#include "../lib/CondSh.h"
 
-#ifdef _WIN32
+#ifdef VCMI_WINDOWS
 #include "SDL_syswm.h"
 #endif
 #include "../lib/UnlockGuard.h"
@@ -51,7 +52,7 @@
 #endif
 
 #ifndef __IOS__
-namespace po = boost::program_options;
+namespace bfs = boost::filesystem;
 #endif
 
 /*
@@ -74,13 +75,12 @@ int preferredDriverIndex = -1;
 SDL_Window * mainWindow = nullptr;
 SDL_Renderer * mainRenderer = nullptr;
 SDL_Texture * screenTexture = nullptr;
-
 #endif // VCMI_SDL1
 
 extern boost::thread_specific_ptr<bool> inGuiThread;
 
 SDL_Surface *screen = nullptr, //main screen surface
-	*screen2 = nullptr,//and hlp surface (used to store not-active interfaces layer)
+	*screen2 = nullptr, //and hlp surface (used to store not-active interfaces layer)
 	*screenBuf = screen; //points to screen (if only advmapint is present) or screen2 (else) - should be used when updating controls which are not regularly redrawed
 	
 std::queue<SDL_Event> events;
@@ -103,31 +103,29 @@ static void mainLoop();
 void startGame(StartInfo * options, CConnection *serv = nullptr);
 void endGame();
 
-#ifndef _WIN32
+#ifndef VCMI_WINDOWS
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
 #include <getopt.h>
 #endif
 
-void startGameFromFile(const std::string &fname)
+void startGameFromFile(const bfs::path &fname)
 {
 	StartInfo si;
 	try //attempt retrieving start info from given file
 	{
-		if(!fname.size() || !boost::filesystem::exists(fname))
-			throw std::runtime_error("Startfile \"" + fname + "\" does not exist!");
+		if(fname.empty() || !bfs::exists(fname))
+			throw std::runtime_error("Startfile \"" + fname.string() + "\" does not exist!");
 
 		CLoadFile out(fname);
-		if(!out.sfile || !*out.sfile)
-		{
-			throw std::runtime_error("Cannot read from startfile \"" + fname + "\"!");
-		}
+		if (!out.sfile || !*out.sfile)
+			throw std::runtime_error("Cannot read from startfile \"" + fname.string() +"\"!");
 		out >> si;
 	}
 	catch(std::exception &e)
 	{
-		logGlobal->errorStream() << "Failed to start from the file: " + fname << ". Error: " << e.what()
+		logGlobal->errorStream() << "Failed to start from the file: " << fname << ". Error: " << e.what()
 			<< " Falling back to main menu.";
 		GH.curInt = CGPreGame::create();
 		return;
@@ -197,17 +195,21 @@ static void prog_help()
 void OSX_checkForUpdates();
 #endif
 
-#if defined(_WIN32) && !defined (__GNUC__)
+#if defined(VCMI_WINDOWS) && !defined (__GNUC__)
 int wmain(int argc, wchar_t* argv[])
-#elif defined(__APPLE__)
+#elif defined(VCMI_APPLE)
 int SDL_main(int argc, char *argv[])
 #else
 int main(int argc, char** argv)
 #endif
 {
+#ifdef VCMI_ANDROID
+	// boost will crash without this
+	setenv("LANG", "C", 1);
+#endif
 #ifndef __IOS__
-#if defined(__APPLE__)
-// Correct working dir executable folder (not bundle folder) so we can use executable relative paths
+#ifdef VCMI_APPLE
+	// Correct working dir executable folder (not bundle folder) so we can use executable relative paths
     std::string executablePath = argv[0];
     std::string workDir = executablePath.substr(0, executablePath.rfind('/'));
     chdir(workDir.c_str());
@@ -216,7 +218,7 @@ int main(int argc, char** argv)
     OSX_checkForUpdates();
 
     // Check that game data is prepared. Otherwise run vcmibuilder helper application
-    FILE* check = fopen((VCMIDirs::get().userDataPath() + "/game_data_prepared").c_str(), "r");
+    FILE* check = fopen((VCMIDirs::get().userDataPath() / "game_data_prepared").string().c_str(), "r");
     if (check == nullptr) {
         system("open ./vcmibuilder.app");
         return 0;
@@ -229,14 +231,20 @@ int main(int argc, char** argv)
 		("help,h", "display help and exit")
 		("version,v", "display version information and exit")
 		("battle,b", po::value<std::string>(), "runs game in duel mode (battle-only")
-		("start", po::value<std::string>(), "starts game from saved StartInfo file")
+		("start", po::value<bfs::path>(), "starts game from saved StartInfo file")
 		("onlyAI", "runs without human player, all players will be default AI")
 		("noGUI", "runs without GUI, implies --onlyAI")
 		("ai", po::value<std::vector<std::string>>(), "AI to be used for the player, can be specified several times for the consecutive players")
 		("oneGoodAI", "puts one default AI and the rest will be EmptyAI")
 		("autoSkip", "automatically skip turns in GUI")
 		("disable-video", "disable video player")
-		("nointro,i", "skips intro movies");
+		("nointro,i", "skips intro movies")
+        ("loadserver","specifies we are the multiplayer server for loaded games")
+        ("loadnumplayers",po::value<int>(),"specifies the number of players connecting to a multiplayer game")
+        ("loadhumanplayerindices",po::value<std::vector<int>>(),"Indexes of human players (0=Red, etc.)")
+        ("loadplayer", po::value<int>(),"specifies which player we are in multiplayer loaded games (0=Red, etc.)")
+        ("loadserverip",po::value<std::string>(),"IP for loaded game server")
+        ("loadserverport",po::value<std::string>(),"port for loaded game server");
 
 	if(argc > 1)
 	{
@@ -283,20 +291,16 @@ int main(int argc, char** argv)
 	CStopWatch total, pomtime;
 	std::cout.flags(std::ios::unitbuf);
 	console = new CConsoleHandler;
-	*console->cb = std::bind(&processCommand, _1);
+	*console->cb = processCommand;
 	console->start();
 	atexit(dispose);
 
-	const auto logPath = VCMIDirs::get().userCachePath() + "/VCMI_Client_log.txt";
+	const bfs::path logPath = VCMIDirs::get().userCachePath() / "VCMI_Client_log.txt";
 	CBasicLogConfigurator logConfig(logPath, console);
     logConfig.configureDefault();
 	logGlobal->infoStream() << "Creating console and configuring logger: " << pomtime.getDiff();
 	logGlobal->infoStream() << "The log file will be saved to " << logPath;
 
-#ifdef __ANDROID__
-	// boost will crash without this
-	setenv("LANG", "C", 1);
-#endif
     // Init filesystem and settings
 	preinitDLL(::console);
     settings.init();
@@ -315,8 +319,7 @@ int main(int argc, char** argv)
 	};
 
 	if (!testFile("DATA/HELP.TXT", "Heroes III data") ||
-	    !testFile("MODS/VCMI/MOD.JSON", "VCMI mod") ||
-	    !testFile("DATA/StackQueueBgBig.PCX", "VCMI data"))
+	    !testFile("MODS/VCMI/MOD.JSON", "VCMI data"))
 		exit(1); // These are unrecoverable errors
 
 	// these two are optional + some installs have them on CD and not in data directory
@@ -371,17 +374,37 @@ int main(int argc, char** argv)
 			
 			std::string driverName(info.name);
 			
-						
-			logGlobal->infoStream() << "\t" << driverName;
-			
 			if(!preferredDriverName.empty() && driverName == preferredDriverName)
 			{
 				preferredDriverIndex = it;
-				logGlobal->infoStream() << "\t\twill select this";
-			}					
+				logGlobal->infoStream() << "\t" << driverName << " (active)";
+			}
+			else
+				logGlobal->infoStream() << "\t" << driverName;
 		}			
 		#endif // VCMI_SDL1	
 		
+		config::CConfigHandler::GuiOptionsMap::key_type resPair(res["width"].Float(), res["height"].Float());
+		if (conf.guiOptions.count(resPair) == 0)
+		{
+			// selected resolution was not found - complain & fallback to something that we do have.
+			logGlobal->errorStream() << "Selected resolution " << resPair.first << "x" << resPair.second << " was not found!";
+			if (conf.guiOptions.empty())
+			{
+				logGlobal->errorStream() << "Unable to continue - no valid resolutions found! Please reinstall VCMI to fix this";
+				exit(1);
+			}
+			else
+			{
+				Settings newRes = settings.write["video"]["screenRes"];
+				newRes["width"].Float()  = conf.guiOptions.begin()->first.first;
+				newRes["height"].Float() = conf.guiOptions.begin()->first.second;
+				conf.SetResolution(newRes["width"].Float(), newRes["height"].Float());
+
+				logGlobal->errorStream() << "Falling back to " << newRes["width"].Float() << "x" << newRes["height"].Float();
+			}
+		}
+
 		setScreenRes(res["width"].Float(), res["height"].Float(), video["bitsPerPixel"].Float(), video["fullscreen"].Bool());
 		logGlobal->infoStream() <<"\tInitializing screen: "<<pomtime.getDiff();
 	}
@@ -405,7 +428,7 @@ int main(int argc, char** argv)
 
     logGlobal->infoStream()<<"\tInitializing video: "<<pomtime.getDiff();
 
-#if defined(__ANDROID__)
+#if defined(VCMI_ANDROID)
 	//on Android threaded init is broken
 	#define VCMI_NO_THREADED_LOAD
 #endif // defined
@@ -448,15 +471,15 @@ int main(int argc, char** argv)
 		session["autoSkip"].Bool()  = vm.count("autoSkip");
 		session["oneGoodAI"].Bool() = vm.count("oneGoodAI");
 
-		std::string fileToStartFrom; //none by default
+		bfs::path fileToStartFrom; //none by default
 		if(vm.count("start"))
-			fileToStartFrom = vm["start"].as<std::string>();
+			fileToStartFrom = vm["start"].as<bfs::path>();
 
-		if(fileToStartFrom.size() && boost::filesystem::exists(fileToStartFrom))
+		if(!fileToStartFrom.empty() && bfs::exists(fileToStartFrom))
 			startGameFromFile(fileToStartFrom); //ommit pregame and start the game using settings from file
 		else
 		{
-			if(fileToStartFrom.size())
+			if(!fileToStartFrom.empty())
 			{
                 logGlobal->warnStream() << "Warning: cannot find given file to start from (" << fileToStartFrom
                     << "). Falling back to main menu.";
@@ -616,7 +639,8 @@ void processCommand(const std::string &message)
 	{
         std::cout<<"Command accepted.\t";
 
-		std::string outPath = VCMIDirs::get().userCachePath() + "/extracted/";
+		const bfs::path outPath =
+			VCMIDirs::get().userCachePath() / "extracted";
 
 		auto list = CResourceHandler::get()->getFilteredFiles([](const ResourceID & ident)
 		{
@@ -625,18 +649,18 @@ void processCommand(const std::string &message)
 
 		for (auto & filename : list)
 		{
-			std::string outName = outPath + filename.getName();
+			const bfs::path filePath = outPath / (filename.getName() + ".TXT");
+			
+			bfs::create_directories(filePath.parent_path());
 
-			boost::filesystem::create_directories(outName.substr(0, outName.find_last_of("/")));
-
-			std::ofstream file(outName + ".TXT");
+			bfs::ofstream file(filePath);
 			auto text = CResourceHandler::get()->load(filename)->readAll();
 
 			file.write((char*)text.first.get(), text.second);
 		}
 
         std::cout << "\rExtracting done :)\n";
-        std::cout << " Extracted files can be found in " << outPath << " directory\n";
+		std::cout << " Extracted files can be found in " << outPath << " directory\n";
 	}
 	else if(cn=="crash")
 	{
@@ -744,15 +768,13 @@ void processCommand(const std::string &message)
 		{
 			CDefEssential * cde = CDefHandler::giveDefEss(URI);
 
-			std::string outName = URI;
-			std::string outPath = VCMIDirs::get().userCachePath() + "/extracted/";
+			const bfs::path outPath = VCMIDirs::get().userCachePath() / "extracted" / URI;
+			bfs::create_directories(outPath);
 
-			boost::filesystem::create_directories(outPath + outName);
-
-			for (size_t i=0; i<cde->ourImages.size(); i++)
+			for (size_t i = 0; i < cde->ourImages.size(); ++i)
 			{
-				std::string filename = outPath + outName + '/' + boost::lexical_cast<std::string>(i) + ".bmp";
-				SDL_SaveBMP(cde->ourImages[i].bitmap, filename.c_str());
+				const bfs::path filePath = outPath / (boost::lexical_cast<std::string>(i)+".bmp");
+				SDL_SaveBMP(cde->ourImages[i].bitmap, filePath.string().c_str());
 			}
 		}
 		else
@@ -765,14 +787,12 @@ void processCommand(const std::string &message)
 
 		if (CResourceHandler::get()->existsResource(ResourceID(URI)))
 		{
-			std::string outName = URI;
-			std::string outPath = VCMIDirs::get().userCachePath() + "/extracted/";
-			std::string fullPath = outPath + outName;
+			const bfs::path outPath = VCMIDirs::get().userCachePath() / "extracted" / URI;
 
 			auto data = CResourceHandler::get()->load(ResourceID(URI))->readAll();
 
-			boost::filesystem::create_directories(fullPath.substr(0, fullPath.find_last_of("/")));
-			std::ofstream outFile(outPath + outName, std::ofstream::binary);
+			bfs::create_directories(outPath.parent_path());
+			bfs::ofstream outFile(outPath, bfs::ofstream::binary);
 			outFile.write((char*)data.first.get(), data.second);
 		}
 		else
@@ -813,9 +833,9 @@ void processCommand(const std::string &message)
 //plays intro, ends when intro is over or button has been pressed (handles events)
 void playIntro()
 {
-	if(CCS->videoh->openAndPlayVideo("3DOLOGO.SMK", 60, 40, screen, true))
+	if(CCS->videoh->openAndPlayVideo("3DOLOGO.SMK", 60, 40, screen, true, true))
 	{
-		CCS->videoh->openAndPlayVideo("AZVS.SMK", 60, 80, screen, true);
+		CCS->videoh->openAndPlayVideo("AZVS.SMK", 60, 80, screen, true, true);
 	}
 }
 
@@ -1053,7 +1073,7 @@ static void setScreenRes(int w, int h, int bpp, bool fullscreen, bool resetVideo
 	SDL_ShowCursor(SDL_DISABLE);
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 
-#ifdef _WIN32
+#ifdef VCMI_WINDOWS
 	SDL_SysWMinfo wm;
 	SDL_VERSION(&wm.version);
 	int getwm = SDL_GetWMInfo(&wm);
@@ -1249,7 +1269,10 @@ void startGame(StartInfo * options, CConnection *serv/* = nullptr*/)
 	case StartInfo::LOAD_GAME:
 		std::string fname = options->mapname;
 		boost::algorithm::erase_last(fname,".vlgm1");
-		client->loadGame(fname);
+        if(!vm.count("loadplayer"))
+            client->loadGame(fname);
+        else
+            client->loadGame(fname,vm.count("loadserver"),vm.count("loadhumanplayerindices") ? vm["loadhumanplayerindices"].as<std::vector<int>>() : std::vector<int>(),vm.count("loadnumplayers") ? vm["loadnumplayers"].as<int>() : 1,vm["loadplayer"].as<int>(),vm.count("loadserverip") ? vm["loadserverip"].as<std::string>() : "", vm.count("loadserverport") ? vm["loadserverport"].as<std::string>() : "3030");
 		break;
 	}
 

@@ -659,23 +659,23 @@ void CGameState::randomizeObject(CGObjectInstance *cur)
 	{
 		if(cur->ID==Obj::TOWN)
 			cur->setType(cur->ID, cur->subID); // update def, if necessary
-		return;
 	}
 	else if(ran.first==Obj::HERO)//special code for hero
 	{
 		CGHeroInstance *h = dynamic_cast<CGHeroInstance *>(cur);
 		cur->setType(ran.first, ran.second);
 		map->heroesOnMap.push_back(h);
-		return;
 	}
 	else if(ran.first==Obj::TOWN)//special code for town
 	{
 		CGTownInstance *t = dynamic_cast<CGTownInstance*>(cur);
 		cur->setType(ran.first, ran.second);
 		map->towns.push_back(t);
-		return;
 	}
-	cur->setType(ran.first, ran.second);
+	else
+	{
+		cur->setType(ran.first, ran.second);	
+	}	
 }
 
 int CGameState::getDate(Date::EDateType mode) const
@@ -1796,7 +1796,6 @@ void CGameState::initTowns()
 				}
 		}
 		//init spells
-		logGlobal->debugStream() << "\t\tTown init spells";
 		vti->spells.resize(GameConstants::SPELL_LEVELS);
 
 		for(ui32 z=0; z<vti->obligatorySpells.size();z++)
@@ -1805,7 +1804,6 @@ void CGameState::initTowns()
 			vti->spells[s->level-1].push_back(s->id);
 			vti->possibleSpells -= s->id;
 		}
-		logGlobal->debugStream() << "\t\tTown init spells2";
 		while(vti->possibleSpells.size())
 		{
 			ui32 total=0;
@@ -1837,7 +1835,6 @@ void CGameState::initTowns()
 		vti->possibleSpells.clear();
 		if(vti->getOwner() != PlayerColor::NEUTRAL)
 			getPlayer(vti->getOwner())->towns.push_back(vti);
-        logGlobal->debugStream() << "\t\tTown init spells3";
 
 	}
 }
@@ -2165,10 +2162,10 @@ void CGameState::apply(CPack *pack)
 	applierGs->apps[typ]->applyOnGS(this,pack);
 }
 
-void CGameState::calculatePaths(const CGHeroInstance *hero, CPathsInfo &out, int3 src, int movement)
+void CGameState::calculatePaths(const CGHeroInstance *hero, CPathsInfo &out)
 {
 	CPathfinder pathfinder(out, this, hero);
-	pathfinder.calculatePaths(src, movement);
+	pathfinder.calculatePaths();
 }
 
 /**
@@ -2241,6 +2238,10 @@ bool CGameState::isVisible(int3 pos, PlayerColor player)
 bool CGameState::isVisible( const CGObjectInstance *obj, boost::optional<PlayerColor> player )
 {
 	if(!player)
+		return true;
+
+	//we should always see our own heroes - but sometimes not visible heroes cause crash :?
+	if (player == obj->tempOwner)
 		return true;
 
 	if(*player == PlayerColor::NEUTRAL) //-> TODO ??? needed?
@@ -2896,9 +2897,29 @@ bool CGPathNode::reachable() const
 	return turns < 255;
 }
 
-bool CPathsInfo::getPath( const int3 &dst, CGPath &out )
+const CGPathNode * CPathsInfo::getPathInfo( int3 tile ) const
 {
-	assert(isValid);
+	boost::unique_lock<boost::mutex> pathLock(pathMx);
+
+	if (tile.x >= sizes.x || tile.y >= sizes.y || tile.z >= sizes.z)
+		return nullptr;
+	return &nodes[tile.x][tile.y][tile.z];
+}
+
+int CPathsInfo::getDistance( int3 tile ) const
+{
+	boost::unique_lock<boost::mutex> pathLock(pathMx);
+
+	CGPath ret;
+	if (getPath(tile, ret))
+		return ret.nodes.size();
+	else
+		return 255;
+}
+
+bool CPathsInfo::getPath( const int3 &dst, CGPath &out ) const
+{
+	boost::unique_lock<boost::mutex> pathLock(pathMx);
 
 	out.nodes.clear();
 	const CGPathNode *curnode = &nodes[dst.x][dst.y][dst.z];
@@ -2965,7 +2986,7 @@ void CGPath::convert( ui8 mode )
 }
 
 PlayerState::PlayerState()
- : color(-1), currentSelection(0xffffffff), enteredWinningCheatCode(0),
+ : color(-1), enteredWinningCheatCode(0),
    enteredLosingCheatCode(0), status(EPlayerStatus::INGAME)
 {
 	setNodeType(PLAYER);
@@ -3277,17 +3298,15 @@ void CPathfinder::initializeGraph()
 	}
 }
 
-void CPathfinder::calculatePaths(int3 src /*= int3(-1,-1,-1)*/, int movement /*= -1*/)
+void CPathfinder::calculatePaths()
 {
 	assert(hero);
 	assert(hero == getHero(hero->id));
-	if(src.x < 0)
-		src = hero->getPosition(false);
-	if(movement < 0)
-		movement = hero->movement;
+
 	bool flying = hero->hasBonusOfType(Bonus::FLYING_MOVEMENT);
 	int maxMovePointsLand = hero->maxMovePoints(true);
 	int maxMovePointsWater = hero->maxMovePoints(false);
+	int3 src = hero->getPosition(false);
 
 	auto maxMovePoints = [&](CGPathNode *cp) -> int
 	{
@@ -3295,21 +3314,21 @@ void CPathfinder::calculatePaths(int3 src /*= int3(-1,-1,-1)*/, int movement /*=
 	};
 
 	out.hero = hero;
-	out.hpos = src;
+	out.hpos = hero->getPosition(false);
 
-	if(!gs->map->isInTheMap(src)/* || !gs->map->isInTheMap(dest)*/) //check input
+	if(!gs->map->isInTheMap(out.hpos)/* || !gs->map->isInTheMap(dest)*/) //check input
 	{
         logGlobal->errorStream() << "CGameState::calculatePaths: Hero outside the gs->map? How dare you...";
 		return;
 	}
 
+	//logGlobal->infoStream() << boost::format("Calculating paths for hero %s (adress  %d) of player %d") % hero->name % hero % hero->tempOwner;
 	initializeGraph();
 
-
 	//initial tile - set cost on 0 and add to the queue
-	CGPathNode &initialNode = *getNode(src);
+	CGPathNode &initialNode = *getNode(out.hpos);
 	initialNode.turns = 0;
-	initialNode.moveRemains = movement;
+	initialNode.moveRemains = hero->movement;
 	mq.push_back(&initialNode);
 
 	std::vector<int3> neighbours;
@@ -3425,8 +3444,6 @@ void CPathfinder::calculatePaths(int3 src /*= int3(-1,-1,-1)*/, int movement /*=
 			}
 		} //neighbours loop
 	} //queue loop
-
-	out.isValid = true;
 }
 
 CGPathNode *CPathfinder::getNode(const int3 &coord)
@@ -3457,7 +3474,7 @@ CGPathNode::EAccessibility CPathfinder::evaluateAccessibility(const TerrainTile 
 		{
 			for(const CGObjectInstance *obj : tinfo->visitableObjects)
 			{
-				if(obj->passableFor(hero->tempOwner)) //special object instance specific passableness flag - overwrites other accessibility flags
+				if (obj->passableFor(hero->tempOwner))
 				{
 					ret = CGPathNode::ACCESSIBLE;
 				}
@@ -3521,6 +3538,6 @@ CPathfinder::CPathfinder(CPathsInfo &_out, CGameState *_gs, const CGHeroInstance
 
 CRandomGenerator & CGameState::getRandomGenerator()
 {
-	logGlobal->traceStream() << "Fetching CGameState::rand with seed " << rand.nextInt();
+	//logGlobal->traceStream() << "Fetching CGameState::rand with seed " << rand.nextInt();
 	return rand;
 }
